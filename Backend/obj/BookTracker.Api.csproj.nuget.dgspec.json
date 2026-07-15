@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Personal Projects\\Book Tracker\\Backend\\BookTracker.Api.csproj": {}
+    "C:\\Personal Projects\\Book Tracker\\Backend\\BookTracker.Api.csproj": {}
   },
   "projects": {
-    "c:\\Personal Projects\\Book Tracker\\Backend\\BookTracker.Api.csproj": {
+    "C:\\Personal Projects\\Book Tracker\\Backend\\BookTracker.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Personal Projects\\Book Tracker\\Backend\\BookTracker.Api.csproj",
+        "projectUniqueName": "C:\\Personal Projects\\Book Tracker\\Backend\\BookTracker.Api.csproj",
         "projectName": "BookTracker.Api",
-        "projectPath": "c:\\Personal Projects\\Book Tracker\\Backend\\BookTracker.Api.csproj",
+        "projectPath": "C:\\Personal Projects\\Book Tracker\\Backend\\BookTracker.Api.csproj",
         "packagesPath": "C:\\Users\\marks\\.nuget\\packages\\",
-        "outputPath": "c:\\Personal Projects\\Book Tracker\\Backend\\obj\\",
+        "outputPath": "C:\\Personal Projects\\Book Tracker\\Backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\marks\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -63,6 +63,14 @@
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
               "version": "[10.0.10, )"
+            },
+            "Microsoft.OpenApi": {
+              "target": "Package",
+              "version": "[2.3.9, )"
+            },
+            "SQLitePCLRaw.lib.e_sqlite3": {
+              "target": "Package",
+              "version": "[3.53.3, )"
             }
           },
           "imports": [

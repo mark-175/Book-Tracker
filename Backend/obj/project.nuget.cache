@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "KeXMwZo2b0M=",
+  "dgSpecHash": "rnrE7SaaZDk=",
   "success": true,
-  "projectFilePath": "c:\\Personal Projects\\Book Tracker\\Backend\\BookTracker.Api.csproj",
+  "projectFilePath": "C:\\Personal Projects\\Book Tracker\\Backend\\BookTracker.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\marks\\.nuget\\packages\\google.apis\\1.75.0\\google.apis.1.75.0.nupkg.sha512",
     "C:\\Users\\marks\\.nuget\\packages\\google.apis.auth\\1.75.0\\google.apis.auth.1.75.0.nupkg.sha512",
@@ -25,13 +25,13 @@
     "C:\\Users\\marks\\.nuget\\packages\\microsoft.entityframeworkcore.sqlite\\10.0.10\\microsoft.entityframeworkcore.sqlite.10.0.10.nupkg.sha512",
     "C:\\Users\\marks\\.nuget\\packages\\microsoft.entityframeworkcore.sqlite.core\\10.0.10\\microsoft.entityframeworkcore.sqlite.core.10.0.10.nupkg.sha512",
     "C:\\Users\\marks\\.nuget\\packages\\microsoft.extensions.dependencymodel\\10.0.10\\microsoft.extensions.dependencymodel.10.0.10.nupkg.sha512",
-    "C:\\Users\\marks\\.nuget\\packages\\microsoft.openapi\\2.0.0\\microsoft.openapi.2.0.0.nupkg.sha512",
+    "C:\\Users\\marks\\.nuget\\packages\\microsoft.openapi\\2.3.9\\microsoft.openapi.2.3.9.nupkg.sha512",
     "C:\\Users\\marks\\.nuget\\packages\\microsoft.visualstudio.solutionpersistence\\1.0.52\\microsoft.visualstudio.solutionpersistence.1.0.52.nupkg.sha512",
     "C:\\Users\\marks\\.nuget\\packages\\mono.texttemplating\\3.0.0\\mono.texttemplating.3.0.0.nupkg.sha512",
     "C:\\Users\\marks\\.nuget\\packages\\newtonsoft.json\\13.0.4\\newtonsoft.json.13.0.4.nupkg.sha512",
     "C:\\Users\\marks\\.nuget\\packages\\sqlitepclraw.bundle_e_sqlite3\\2.1.11\\sqlitepclraw.bundle_e_sqlite3.2.1.11.nupkg.sha512",
     "C:\\Users\\marks\\.nuget\\packages\\sqlitepclraw.core\\2.1.11\\sqlitepclraw.core.2.1.11.nupkg.sha512",
-    "C:\\Users\\marks\\.nuget\\packages\\sqlitepclraw.lib.e_sqlite3\\2.1.11\\sqlitepclraw.lib.e_sqlite3.2.1.11.nupkg.sha512",
+    "C:\\Users\\marks\\.nuget\\packages\\sqlitepclraw.lib.e_sqlite3\\3.53.3\\sqlitepclraw.lib.e_sqlite3.3.53.3.nupkg.sha512",
     "C:\\Users\\marks\\.nuget\\packages\\sqlitepclraw.provider.e_sqlite3\\2.1.11\\sqlitepclraw.provider.e_sqlite3.2.1.11.nupkg.sha512",
     "C:\\Users\\marks\\.nuget\\packages\\system.codedom\\7.0.0\\system.codedom.7.0.0.nupkg.sha512",
     "C:\\Users\\marks\\.nuget\\packages\\system.composition\\9.0.0\\system.composition.9.0.0.nupkg.sha512",
@@ -46,23 +46,11 @@
     {
       "code": "NU1903",
       "level": "Warning",
-      "message": "Package 'Microsoft.OpenApi' 2.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-v5pm-xwqc-g5wc",
-      "projectPath": "c:\\Personal Projects\\Book Tracker\\Backend\\BookTracker.Api.csproj",
+      "message": "Package 'Microsoft.OpenApi' 2.3.9 has a known high severity vulnerability, https://github.com/advisories/GHSA-v5pm-xwqc-g5wc",
+      "projectPath": "C:\\Personal Projects\\Book Tracker\\Backend\\BookTracker.Api.csproj",
       "warningLevel": 1,
-      "filePath": "c:\\Personal Projects\\Book Tracker\\Backend\\BookTracker.Api.csproj",
+      "filePath": "C:\\Personal Projects\\Book Tracker\\Backend\\BookTracker.Api.csproj",
       "libraryId": "Microsoft.OpenApi",
-      "targetGraphs": [
-        "net10.0"
-      ]
-    },
-    {
-      "code": "NU1903",
-      "level": "Warning",
-      "message": "Package 'SQLitePCLRaw.lib.e_sqlite3' 2.1.11 has a known high severity vulnerability, https://github.com/advisories/GHSA-2m69-gcr7-jv3q",
-      "projectPath": "c:\\Personal Projects\\Book Tracker\\Backend\\BookTracker.Api.csproj",
-      "warningLevel": 1,
-      "filePath": "c:\\Personal Projects\\Book Tracker\\Backend\\BookTracker.Api.csproj",
-      "libraryId": "SQLitePCLRaw.lib.e_sqlite3",
       "targetGraphs": [
         "net10.0"
       ]

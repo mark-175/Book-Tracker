@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BookTracker.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5d7d6718c8e06ee403e9b0c4e11e38e8ca42c2e0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+38cadb9eb21290b36d438dcdcc550d256469ea39")]
 [assembly: System.Reflection.AssemblyProductAttribute("BookTracker.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BookTracker.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
