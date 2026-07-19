@@ -5,6 +5,9 @@ namespace BookTracker.Api.Entities;
 public class UserBook
 {
     public int Id { get; set; }
+    public BookStatus Status { get; set; } = BookStatus.ToRead;
+
+    public double Rating { get; set; }
 
     public Guid UserId { get; set; }
     public User User { get; set; } = null!;
@@ -12,7 +15,6 @@ public class UserBook
     public int BookId { get; set; }
     public Book Book { get; set; } = null!;
 
-    public BookStatus Status { get; set; } = BookStatus.ToRead;
 
     public DateTime? StartedAt { get; set; }
     public DateTime? FinishedAt { get; set; }
