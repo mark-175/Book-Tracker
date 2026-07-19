@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using BookTracker.Api.Data;
 using BookTracker.Api.DTOs;
 using BookTracker.Api.Entities;
@@ -6,11 +7,13 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileSystemGlobbing.Internal.Patterns;
 
 namespace BookTracker.Api.Auth;
 
-public class AuthService : IAuthService
+public partial class AuthService : IAuthService
 {
+    private static readonly Regex PasswordRegex = MyRegex();
     private readonly AppDbContext _db;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly PasswordHasher<User> _hasher = new();
@@ -27,6 +30,12 @@ public class AuthService : IAuthService
         if (exists)
             return AuthResult.Fail("Invalid username.");
 
+        if (!PasswordRegex.IsMatch(password))
+        {
+            return AuthResult.Fail(@"Password should be 8-20 characters and contain:
+At least one digit
+At least on special character [!@#$%^&]");
+        }
         var user = new User { Id = Guid.NewGuid(), Username = username };
         user.PasswordHash = _hasher.HashPassword(user, password);
 
@@ -65,4 +74,7 @@ public class AuthService : IAuthService
 
         await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     }
+
+    [GeneratedRegex(@"^(?=.*\d)(?=.*[!@#$%^&*]).{8,20}$", RegexOptions.Compiled)]
+    private static partial Regex MyRegex();
 }
