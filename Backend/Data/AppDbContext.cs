@@ -19,8 +19,7 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasIndex(u => u.GoogleSub).IsUnique();
-            entity.HasIndex(u => u.Email).IsUnique();
+            entity.HasIndex(u => u.Username).IsUnique();
         });
 
         modelBuilder.Entity<Book>(entity =>
