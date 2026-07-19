@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("ed55f403-d2ed-451c-8fac-d563957ca417")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("BookTracker.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+38cadb9eb21290b36d438dcdcc550d256469ea39")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a6238b36f794012d2a330aff23a128298723fb11")]
 [assembly: System.Reflection.AssemblyProductAttribute("BookTracker.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BookTracker.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
