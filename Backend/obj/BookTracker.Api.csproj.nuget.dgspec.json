@@ -70,11 +70,15 @@
             },
             "Microsoft.OpenApi": {
               "target": "Package",
-              "version": "[2.3.9, )"
+              "version": "[2.7.5, )"
             },
             "SQLitePCLRaw.lib.e_sqlite3": {
               "target": "Package",
               "version": "[3.53.3, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[10.2.3, )"
             },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
