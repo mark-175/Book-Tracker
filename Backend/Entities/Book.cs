@@ -12,7 +12,7 @@ public class Book
     [Required]
     public string Title { get; set; } = string.Empty;
 
-    public string Subtitle {get;set;} = string.Empty;
+    public string Subtitle { get; set; } = string.Empty;
 
     public string Authors { get; set; } = string.Empty;
 
@@ -23,6 +23,8 @@ public class Book
     public string? CoverUrl { get; set; }
 
     public string? Description { get; set; }
+
+    public string Language { get; set; } = string.Empty;
 
     public int? PageCount { get; set; }
 
