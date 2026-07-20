@@ -12,6 +12,8 @@ public class Book
     [Required]
     public string Title { get; set; } = string.Empty;
 
+    public string Subtitle {get;set;} = string.Empty;
+
     public string Authors { get; set; } = string.Empty;
 
     public string? Isbn10 { get; set; }
