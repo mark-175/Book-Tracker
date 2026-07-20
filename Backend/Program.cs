@@ -1,5 +1,6 @@
 using BookTracker.Api.Auth;
 using BookTracker.Api.Data;
+using BookTracker.Api.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +11,13 @@ builder.Services.AddOpenApi();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddHttpContextAccessor();
+
+// Injected services
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IDbBookService, DbBookService>();
+builder.Services.AddScoped<IGoogleBookService, GoogleBookService>();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
