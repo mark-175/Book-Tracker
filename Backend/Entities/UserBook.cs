@@ -6,7 +6,6 @@ public class UserBook
 {
     public int Id { get; set; }
     public BookStatus Status { get; set; } = BookStatus.ToRead;
-
     public double Rating { get; set; }
 
     public Guid UserId { get; set; }
@@ -14,7 +13,6 @@ public class UserBook
 
     public int BookId { get; set; }
     public Book Book { get; set; } = null!;
-
 
     public DateTime? StartedAt { get; set; }
     public DateTime? FinishedAt { get; set; }
