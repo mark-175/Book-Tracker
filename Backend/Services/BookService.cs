@@ -1,4 +1,6 @@
 using BookTracker.Api.DTOs;
+using BookTracker.Api.Services.Db;
+using BookTracker.Api.Services.Google;
 
 namespace BookTracker.Api.Services;
 
@@ -6,23 +8,33 @@ public class BookService : IBookService
 {
     private IDbBookService _dbBookService;
     private IGoogleBookService _googleBookService;
+    private IUserService _userService;
 
-    public BookService(IDbBookService dbBookService, IGoogleBookService googleBookService)
+    public BookService(IDbBookService dbBookService, IGoogleBookService googleBookService, IUserService userService)
     {
         _dbBookService = dbBookService;
         _googleBookService = googleBookService;
+        _userService = userService;
     }
 
-    public Task<BookSearchResult> FindBook(string query, Guid userId)
+    public async Task<List<BookSearchResult>> FindBook(string query, Guid userId)
     {
-        // Find Book in database (_dbBookService) and return if found
+        var preferredLanguages = await _userService.GetPreferredLanguages(userId);
 
-        // If not found, query use _googleBookService to find
+        var dbResult = await _dbBookService.FindBookInDb(query, userId, preferredLanguages);
+        if (dbResult.Count > 0) return dbResult;
 
-        // If found: 1. Add to database using _dbBookService 2. return
+        var googleResponse = await _googleBookService.FindBookInGoogle(query, preferredLanguages);
 
-        // Else return null
+        if (googleResponse is null) return [];
 
-        throw new NotImplementedException();
+        var googleResult = new List<BookSearchResult>();
+        foreach (var volume in googleResponse.Items)
+        {
+            var book = await _dbBookService.SaveOrGetExistingAsync(BookMapper.ToBook(volume));
+            googleResult.Add(BookMapper.ToSearchResult(book));
+        }
+
+        return googleResult;
     }
 }

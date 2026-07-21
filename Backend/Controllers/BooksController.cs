@@ -21,9 +21,9 @@ public class BookController : ControllerBase
     public async Task<IActionResult> FindBook([FromQuery] string query)
     {
         var userId = User.GetUserId();
-        var result = _bookService.FindBook(query, userId);
+        var result = await _bookService.FindBook(query, userId);
 
-        if (result != null)
+        if (result != null && result.Count > 0)
         {
             return Ok(result);
         }
