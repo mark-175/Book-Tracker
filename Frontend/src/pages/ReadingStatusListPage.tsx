@@ -10,9 +10,9 @@ interface Props {
 }
 
 const STATUS_COLORS: Record<ReadingStatus, string> = {
-  "to-read": "#9B8E7A",
-  reading: "#A85830",
-  read: "#527A52",
+  "to-read": "#934dee",
+  reading: "#934dee",
+  read: "#934dee",
 };
 
 const STATUS_LABELS: Record<ReadingStatus, string> = {
@@ -27,7 +27,7 @@ const STATUS_ICONS: Record<ReadingStatus, React.ReactNode> = {
       className="w-6 h-6"
       fill="none"
       viewBox="0 0 24 24"
-      stroke="#9B8E7A"
+      stroke="#b46bdc"
       strokeWidth={1.5}
     >
       <path
@@ -42,7 +42,7 @@ const STATUS_ICONS: Record<ReadingStatus, React.ReactNode> = {
       className="w-6 h-6"
       fill="none"
       viewBox="0 0 24 24"
-      stroke="#A85830"
+      stroke="#b46bdc"
       strokeWidth={1.5}
     >
       <path
@@ -62,7 +62,7 @@ const STATUS_ICONS: Record<ReadingStatus, React.ReactNode> = {
       className="w-6 h-6"
       fill="none"
       viewBox="0 0 24 24"
-      stroke="#527A52"
+      stroke="#b46bdc"
       strokeWidth={1.5}
     >
       <path
@@ -186,7 +186,8 @@ export default function ReadingStatusListPage({
                       className="h-full rounded-full"
                       style={{
                         width: `${(book.pagesRead / book.pageCount) * 100}%`,
-                        background: "linear-gradient(90deg, #A85830, #C8963E)",
+                        background:
+                          "linear-gradient(90deg,   #b46bdc, #934dee)",
                       }}
                     />
                   </div>

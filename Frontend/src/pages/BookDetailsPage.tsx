@@ -11,9 +11,9 @@ interface Props {
 }
 
 const STATUS_COLORS: Record<ReadingStatus, string> = {
-  "to-read": "#9B8E7A",
-  reading: "#A85830",
-  read: "#527A52",
+  "to-read": "#b46bdc",
+  reading: "#b46bdc",
+  read: "#b46bdc",
 };
 
 const STATUS_LABELS: Record<ReadingStatus, string> = {
@@ -132,7 +132,7 @@ export default function BookDetailsPage({
               </p>
               <div
                 className="flex items-center gap-1 text-xs font-semibold"
-                style={{ color: "#A85830" }}
+                style={{ color: "#b46bdc" }}
               >
                 <span>Update</span>
                 <svg
@@ -164,7 +164,7 @@ export default function BookDetailsPage({
                 className="h-full rounded-full"
                 style={{
                   width: `${pct}%`,
-                  background: "linear-gradient(90deg, #A85830, #C8963E)",
+                  background: "linear-gradient(90deg,  #b46bdc, #934dee)",
                 }}
               />
             </div>

@@ -127,7 +127,7 @@ export default function ReadingProgressPage({
             value={localPages}
             onChange={(e) => handleSlider(Number(e.target.value))}
             style={{
-              background: `linear-gradient(to right, #A85830 ${fillPct}%, #DDD4BF ${fillPct}%)`,
+              background: `linear-gradient(to right, #863aaf ${fillPct}%, #DDD4BF ${fillPct}%)`,
             }}
           />
           <div className="flex justify-between mt-1.5">
@@ -164,7 +164,7 @@ export default function ReadingProgressPage({
               onClick={saveAndBack}
               className="px-5 py-3 rounded-xl text-sm font-semibold text-white transition-all active:scale-95"
               style={{
-                background: "linear-gradient(135deg, #A85830, #C8963E)",
+                background: "linear-gradient(135deg,  #b46bdc, #934dee)",
               }}
             >
               Save
@@ -218,8 +218,8 @@ export default function ReadingProgressPage({
                         height: `${(chartBars[i] / maxBar) * 100}%`,
                         background:
                           i === 5
-                            ? "linear-gradient(180deg, #C8963E, #A85830)"
-                            : "rgba(168,88,48,0.25)",
+                            ? "linear-gradient(90deg,   #b46bdc, #934dee);"
+                            : "#b46bdc",
                       }}
                     />
                   </div>

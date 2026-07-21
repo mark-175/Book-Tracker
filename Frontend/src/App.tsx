@@ -112,20 +112,21 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen relative" style={{ background: "#E5DDD0" }}>
-      {/* Phone-width app container */}
+    <div
+      className="min-h-screen relative"
+      style={{ background: "var(--bg-outer)" }}
+    >
       <div
         className="relative mx-auto min-h-screen"
         style={{
           maxWidth: 430,
-          background: "#F4EFE4",
+          background: "var(--bg-app)",
           boxShadow: "0 0 40px rgba(44,26,14,0.15)",
         }}
       >
         {renderPage()}
       </div>
 
-      {/* Search modal renders full-screen above everything */}
       {searchOpen && (
         <SearchModal
           books={books}

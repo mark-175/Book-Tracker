@@ -1,6 +1,6 @@
 import type { Book, ReadingStatus } from "../types/data";
 import BookCover from "../components/BookCover";
-import StarRating from "../components/StarRating";
+import StarRating from "@/components/StarRating";
 
 interface Props {
   books: Book[];
@@ -13,13 +13,14 @@ const STATUS_CONFIG = [
   {
     label: "To Read",
     status: "to-read" as ReadingStatus,
-    color: "#9B8E7A",
-    icon: (color: string) => (
+    colorVar: "var(--status-to-read)",
+    subtleVar: "var(--status-to-read-subtle)",
+    icon: (
       <svg
         className="w-5 h-5"
         fill="none"
         viewBox="0 0 24 24"
-        stroke={color}
+        stroke="var(--status-to-read)"
         strokeWidth={1.5}
       >
         <path
@@ -33,13 +34,14 @@ const STATUS_CONFIG = [
   {
     label: "Reading",
     status: "reading" as ReadingStatus,
-    color: "#A85830",
-    icon: (color: string) => (
+    colorVar: "var(--status-reading)",
+    subtleVar: "var(--status-reading-subtle)",
+    icon: (
       <svg
         className="w-5 h-5"
         fill="none"
         viewBox="0 0 24 24"
-        stroke={color}
+        stroke="var(--status-reading)"
         strokeWidth={1.5}
       >
         <path
@@ -58,13 +60,14 @@ const STATUS_CONFIG = [
   {
     label: "Read",
     status: "read" as ReadingStatus,
-    color: "#527A52",
-    icon: (color: string) => (
+    colorVar: "var(--status-read)",
+    subtleVar: "var(--status-read-subtle)",
+    icon: (
       <svg
         className="w-5 h-5"
         fill="none"
         viewBox="0 0 24 24"
-        stroke={color}
+        stroke="var(--status-read)"
         strokeWidth={1.5}
       >
         <path
@@ -113,7 +116,7 @@ export default function HomePage({
     <div className="min-h-screen bg-cream pb-28">
       {/* Header */}
       <div className="px-5 pt-14 pb-5">
-        <p className="text-muted text-xs font-sans tracking-wide">{today}</p>
+        <p className="text-muted text-xs tracking-wide">{today}</p>
         <h1 className="font-serif text-[32px] font-semibold text-bark mt-1 leading-tight">
           My Library
         </h1>
@@ -123,15 +126,15 @@ export default function HomePage({
       <div className="px-5 mb-7">
         <div
           className="rounded-2xl p-5 overflow-hidden relative"
-          style={{ background: "#2C1A0E" }}
+          style={{ background: "var(--bg-stats)" }}
         >
-          {/* Decorative book lines */}
+          {/* Decorative book spines */}
           <div className="absolute right-4 top-3 flex gap-1.5 opacity-10">
             {[40, 55, 35, 48, 60].map((h, i) => (
               <div
                 key={i}
-                className="w-1.5 rounded-sm"
-                style={{ height: h, background: "#C8963E" }}
+                className="w-1.5 rounded-sm bg-amber"
+                style={{ height: h }}
               />
             ))}
           </div>
@@ -145,7 +148,7 @@ export default function HomePage({
               <p className="font-serif text-[34px] font-bold leading-none text-amber">
                 {read.length}
               </p>
-              <p className="text-[11px] text-white/40 mt-1.5 font-sans leading-tight">
+              <p className="text-[11px] text-white/40 mt-1.5 leading-tight">
                 Books
                 <br />
                 Finished
@@ -155,7 +158,7 @@ export default function HomePage({
               <p className="font-serif text-[34px] font-bold leading-none text-amber">
                 {pagesRead.toLocaleString()}
               </p>
-              <p className="text-[11px] text-white/40 mt-1.5 font-sans leading-tight">
+              <p className="text-[11px] text-white/40 mt-1.5 leading-tight">
                 Pages
                 <br />
                 Read
@@ -165,7 +168,7 @@ export default function HomePage({
               <p className="font-serif text-[34px] font-bold leading-none text-amber">
                 {avgRating ?? "—"}
               </p>
-              <p className="text-[11px] text-white/40 mt-1.5 font-sans leading-tight">
+              <p className="text-[11px] text-white/40 mt-1.5 leading-tight">
                 Average
                 <br />
                 Rating
@@ -198,9 +201,9 @@ export default function HomePage({
             onClick={() => onNavigateToBook(currentBook.id)}
             className="w-full rounded-2xl p-4 flex gap-4 items-start text-left transition-all active:scale-[0.99]"
             style={{
-              background: "#FDFBF6",
-              border: "1px solid #DDD4BF",
-              boxShadow: "0 2px 8px rgba(44,26,14,0.06)",
+              background: "var(--bg-card)",
+              border: "1px solid var(--border-card)",
+              boxShadow: "var(--shadow-card-md)",
             }}
           >
             <BookCover book={currentBook} size="lg" />
@@ -236,13 +239,13 @@ export default function HomePage({
                 </div>
                 <div
                   className="h-1.5 rounded-full overflow-hidden"
-                  style={{ background: "#DDD4BF" }}
+                  style={{ background: "var(--border-card)" }}
                 >
                   <div
                     className="h-full rounded-full transition-all"
                     style={{
                       width: `${(currentBook.pagesRead / currentBook.pageCount) * 100}%`,
-                      background: "linear-gradient(90deg, #A85830, #C8963E)",
+                      background: "var(--gradient-progress)",
                     }}
                   />
                 </div>
@@ -265,7 +268,7 @@ export default function HomePage({
         </div>
 
         <div className="flex flex-col gap-3">
-          {STATUS_CONFIG.map(({ label, status, color, icon }) => {
+          {STATUS_CONFIG.map(({ label, status, colorVar, subtleVar, icon }) => {
             const statusBooks = booksByStatus[status];
             return (
               <button
@@ -273,16 +276,16 @@ export default function HomePage({
                 onClick={() => onNavigateToList(status)}
                 className="w-full rounded-2xl p-4 flex items-center gap-4 text-left transition-all active:scale-[0.99]"
                 style={{
-                  background: "#FDFBF6",
-                  border: "1px solid #DDD4BF",
-                  boxShadow: "0 1px 4px rgba(44,26,14,0.05)",
+                  background: "var(--bg-card)",
+                  border: "1px solid var(--border-card)",
+                  boxShadow: "var(--shadow-card)",
                 }}
               >
                 <div
                   className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: `${color}18` }}
+                  style={{ background: subtleVar }}
                 >
-                  {icon(color)}
+                  {icon}
                 </div>
 
                 <div className="flex-1 min-w-0">
@@ -312,7 +315,7 @@ export default function HomePage({
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <span
                     className="font-serif text-base font-bold w-8 h-8 rounded-xl flex items-center justify-center"
-                    style={{ background: `${color}18`, color }}
+                    style={{ background: subtleVar, color: colorVar }}
                   >
                     {statusBooks.length}
                   </span>
@@ -341,8 +344,8 @@ export default function HomePage({
         onClick={onOpenSearch}
         className="fixed bottom-8 right-5 w-14 h-14 rounded-full flex items-center justify-center transition-all active:scale-95 z-40"
         style={{
-          background: "linear-gradient(135deg, #A85830, #C8963E)",
-          boxShadow: "0 4px 16px rgba(168,88,48,0.45)",
+          background: "var(--gradient-accent)",
+          boxShadow: "var(--shadow-fab)",
         }}
       >
         <svg

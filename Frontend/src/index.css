@@ -1,40 +1,91 @@
 @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
 @import 'tailwindcss';
 
+/* ─── Tailwind design tokens (generates utility classes) ─────────────────── */
 :root {
-  --color-cream: #F4EFE4;
-  --color-cream-200: #EAE2D0;
-  --color-parchment: #FDFBF6;
-  --color-bark: #2C1A0E;
-  --color-bark-700: #5C3D28;
-  --color-rust: #A85830;
-  --color-amber: #C8963E;
-  --color-sage: #527A52;
-  --color-muted: #9B8E7A;
-  --color-muted-light: #C4BAA8;
-  --color-border: #DDD4BF;
-  --color-surface: #EAE2D0;
+  --color-cream:        #F4EFE4;
+  --color-cream-200:    #EAE2D0;
+  --color-parchment:    #FDFBF6;
+  --color-border:       #DDD4BF;
+  --color-surface:      #EAE2D0;
+
+  --color-bark:         #b46bdc;
+  --color-bark-700:     #5C3D28;
+  --color-muted:        #9B8E7A;
+  --color-muted-light:  #C4BAA8;
+
+  --color-rust:         #A85830;
+  --color-amber:        #C8963E;
+  --color-sage:         #527A52;
 
   --font-serif: 'Lora', Georgia, serif;
-  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-sans:  'DM Sans', system-ui, sans-serif;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   COMPONENT PALETTE — change colors here to retheme the entire app
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root {
+  /* --- Backgrounds -------------------------------------------------------- */
+  --bg-outer:    #E5DDD0;   /* desktop wrapper behind the app              */
+  --bg-app:      #F4EFE4;   /* main app background                         */
+  --bg-card:     #FDFBF6;   /* card / panel background                     */
+  --bg-surface:  #b46bdc;       /* inset areas, inputs, hover                  */
+  --bg-stats:    #541e71ec;   /* reading-statistics card                     */
+
+  /* --- Borders ----------------------------------------------------------- */
+  --border-card: #DDD4BF;   /* card borders                                */
+
+  /* --- Status colours ---------------------------------------------------- */
+  --status-to-read:        #771b93;                    /* "To Read"         */
+  --status-to-read-subtle: rgba(141, 97, 162, 0.09);  /* badge background  */
+  --status-reading:        #771b93;                /* "Reading"         */
+  --status-reading-subtle:  rgba(141, 97, 162, 0.09);  /* badge background  */
+  --status-read:           #771b93;                       /* "Read"            */
+  --status-read-subtle:    rgba(141, 97, 162, 0.09);  /* badge background  */
+
+  /* --- Gradients --------------------------------------------------------- */
+  --gradient-progress:  linear-gradient(90deg,   #b46bdc, #934dee);  /* progress bars  */
+  --gradient-accent:    linear-gradient(135deg,  #b46bdc, #934dee);  /* FAB, save btn  */
+  --gradient-chart-bar: linear-gradient(180deg,  #b46bdc, #934dee);  /* chart highlight*/
+
+  /* --- Shadows ----------------------------------------------------------- */
+  --shadow-card:    0 1px 4px rgba(44, 26, 14, 0.05);
+  --shadow-card-md: 0 2px 10px rgba(44, 26, 14, 0.06);
+  --shadow-cover:   2px 3px 10px rgba(44, 26, 14, 0.35), inset 1px 0 0 rgba(255, 255, 255, 0.06);
+  --shadow-fab:     0 4px 16px rgba(168, 88, 48, 0.45);
+  --shadow-modal:   0 20px 60px rgba(44, 26, 14, 0.30);
+
+  /* --- Overlay ----------------------------------------------------------- */
+  --overlay-bg: rgba(44, 26, 14, 0.55);
+
+  /* --- Chart placeholder ------------------------------------------------- */
+  --chart-bar-muted: rgba(168, 88, 48, 0.22);
+
+  /* --- Range input ------------------------------------------------------- */
+  --input-track: #b46bdc;
+  --input-thumb: #b46bdc;
+  --input-thumb-border: #FDFBF6;
+}
+
+/* ─── Base styles ────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 
 html, body {
   height: 100%;
-  background-color: #E5DDD0;
+  background-color: var(--bg-outer);
 }
 
 body {
   font-family: 'DM Sans', system-ui, sans-serif;
-  color: #2C1A0E;
+  color: var(--color-bark);          /* mapped via --color-bark in @theme   */
   -webkit-font-smoothing: antialiased;
 }
 
 ::-webkit-scrollbar { display: none; }
 * { scrollbar-width: none; }
 
+/* ─── Range input ────────────────────────────────────────────────────────── */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
@@ -51,9 +102,9 @@ input[type="range"]::-webkit-slider-thumb {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #A85830;
+  background: var(--input-thumb);
   cursor: pointer;
-  border: 3px solid #FDFBF6;
+  border: 3px solid var(--input-thumb-border);
   box-shadow: 0 1px 6px rgba(44, 26, 14, 0.25);
 }
 
@@ -61,7 +112,7 @@ input[type="range"]::-moz-range-thumb {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #A85830;
+  background: var(--input-thumb);
   cursor: pointer;
-  border: 3px solid #FDFBF6;
+  border: 3px solid var(--input-thumb-border);
 }
