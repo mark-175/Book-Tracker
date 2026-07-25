@@ -41,6 +41,18 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         };
     });
 
+builder.Services.AddCors(options =>
+{
+options.AddPolicy("frontend", policy =>
+{
+    policy
+        .WithOrigins("http://localhost:5173")
+        .AllowCredentials()
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+});
+});
+
 builder.Services.Configure<GoogleBooksApiOptions>(
 builder.Configuration.GetSection("GoogleBooksApi"));
 
