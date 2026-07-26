@@ -44,7 +44,7 @@ public class BookController : ControllerBase
 
         return result.AddBookStatus switch
         {
-            AddBookStatus.BookNotFound | AddBookStatus.UserNotFound => NotFound(result),
+            AddBookStatus.BookNotFound or AddBookStatus.UserNotFound => NotFound(result),
             AddBookStatus.Success => Created("api/books/add", result),
             _ => StatusCode(500, "Unknown status."),
         };
