@@ -25,16 +25,15 @@ public class DbBookService : IDbBookService
         return books;
     }
 
-    public async Task<Book> SaveOrGetExistingAsync(Book book)
+    public async Task AddBookToDb(Book book)
     {
         var existing = await _dbContext.Books
             .FirstOrDefaultAsync(b => b.GoogleBooksId == book.GoogleBooksId);
 
         if (existing is not null)
-            return existing;
+            return;
 
         _dbContext.Books.Add(book);
         await _dbContext.SaveChangesAsync();
-        return book;
     }
 }

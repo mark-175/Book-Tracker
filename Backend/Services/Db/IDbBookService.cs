@@ -6,5 +6,5 @@ namespace BookTracker.Api.Services.Db;
 public interface IDbBookService
 {
     public Task<List<BookSearchResult>> FindBookInDb(string query, Guid userId, List<string> preferredLanguages);
-    public Task<Book> SaveOrGetExistingAsync(Book book);
+    public Task AddBookToDb(Book book);
 }
