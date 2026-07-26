@@ -17,6 +17,11 @@ public class BookService : IBookService
         _userService = userService;
     }
 
+    public async Task<AddBookToUserResult> AddBookToUser(int bookId, Guid userId)
+    {
+        return await _dbBookService.AddBookToUser(bookId, userId);
+    }
+
     public async Task<List<BookSearchResult>> FindBook(string query, Guid userId)
     {
         var preferredLanguages = await _userService.GetPreferredLanguages(userId);
@@ -31,7 +36,8 @@ public class BookService : IBookService
         var googleResult = new List<BookSearchResult>();
         foreach (var volume in googleResponse.Items)
         {
-            var book = await _dbBookService.SaveOrGetExistingAsync(BookMapper.ToBook(volume));
+            var book = BookMapper.ToBook(volume);
+            await _dbBookService.AddBookToDb(book);
             googleResult.Add(BookMapper.ToSearchResult(book));
         }
 

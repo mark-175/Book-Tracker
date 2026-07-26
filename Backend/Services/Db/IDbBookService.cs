@@ -7,4 +7,5 @@ public interface IDbBookService
 {
     public Task<List<BookSearchResult>> FindBookInDb(string query, Guid userId, List<string> preferredLanguages);
     public Task AddBookToDb(Book book);
+    public Task<AddBookToUserResult> AddBookToUser(int bookId, Guid userId);
 }

@@ -1,7 +1,9 @@
 using BookTracker.Api.Data;
 using BookTracker.Api.DTOs;
 using BookTracker.Api.Entities;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Sqlite.Diagnostics.Internal;
 
 namespace BookTracker.Api.Services.Db;
 
@@ -35,5 +37,37 @@ public class DbBookService : IDbBookService
 
         _dbContext.Books.Add(book);
         await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<AddBookToUserResult> AddBookToUser(int bookId, Guid userId)
+    {
+        try
+        {
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+            {
+                return AddBookToUserResult.UserNotFoundResult(bookId);
+            }
+
+            var book = await _dbContext.Books.FirstOrDefaultAsync(b => b.Id == bookId);
+            if (book == null)
+            {
+                return AddBookToUserResult.BookNotFoundResult(userId, bookId);
+            }
+
+            var userBook = new UserBook
+            {
+                UserId = userId,
+                BookId = bookId,
+            };
+            _dbContext.UserBooks.Add(userBook);
+            await _dbContext.SaveChangesAsync();
+
+            return AddBookToUserResult.Success(userId, bookId, BookMapper.ToBookDTO(book));
+        }
+        catch
+        {
+            return AddBookToUserResult.UnexpectedError(bookId);
+        }
     }
 }

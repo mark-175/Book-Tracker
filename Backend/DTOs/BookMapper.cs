@@ -41,4 +41,20 @@ public static class BookMapper
             PageCount = book.PageCount
         };
     }
+
+    public static BookDTO ToBookDTO(Book book)
+    {
+        return new BookDTO
+        {
+            Title = book.Title,
+            Subtitle = book.Subtitle,
+            Authors = book.Authors,
+            Language = book.Language,
+            Description = book.Description,
+            CoverUrl = book.CoverUrl,
+            Isbn10 = book.Isbn10,
+            Isbn13 = book.Isbn13,
+            PageCount = book.PageCount,
+        };
+    }
 }

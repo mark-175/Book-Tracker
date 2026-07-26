@@ -1,6 +1,9 @@
 using BookTracker.Api.Auth;
+using BookTracker.Api.DTOs;
+using BookTracker.Api.Enums;
 using BookTracker.Api.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookTracker.Api.Controllers;
@@ -29,5 +32,21 @@ public class BookController : ControllerBase
         }
 
         return NotFound("Couldn't find book.");
+    }
+
+    [HttpPost("add")]
+    public async Task<IActionResult> AddBookToUser([FromQuery] int bookId)
+    {
+        var userId = User.GetUserId();
+        var result = await _bookService.AddBookToUser(bookId, userId);
+
+        if (result == null) return StatusCode(500);
+
+        return result.AddBookStatus switch
+        {
+            AddBookStatus.BookNotFound | AddBookStatus.UserNotFound => NotFound(result),
+            AddBookStatus.Success => Created("api/books/add", result),
+            _ => StatusCode(500, "Unknown status."),
+        };
     }
 }
