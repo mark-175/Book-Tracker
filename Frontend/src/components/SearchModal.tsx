@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Book, CatalogBook } from "../types/data";
-import { SEARCH_CATALOG } from "../types/data";
+import { searchBooks } from "@/api/books";
+import { toCatalogBook } from "@/api/mappers";
 import BookCover from "./BookCover";
 
 interface Props {
   books: Book[];
   onClose: () => void;
   onSelectBook: (bookId: string) => void;
-  onAddBook: (catalogBook: CatalogBook) => void;
+  onAddBook: (catalogBook: CatalogBook) => Promise<void>;
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -35,6 +36,9 @@ export default function SearchModal({
   onAddBook,
 }: Props) {
   const [query, setQuery] = useState("");
+  const [catalogResults, setCatalogResults] = useState<CatalogBook[]>([]);
+  const [searching, setSearching] = useState(false);
+  const [addingId, setAddingId] = useState<string | null>(null);
   const q = query.toLowerCase().trim();
 
   const libraryResults = books.filter(
@@ -42,17 +46,47 @@ export default function SearchModal({
       b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q),
   );
 
-  const catalogResults =
-    q.length > 1
-      ? SEARCH_CATALOG.filter(
-          (b) =>
-            !books.find((lb) => lb.id === b.id) &&
-            (b.title.toLowerCase().includes(q) ||
-              b.author.toLowerCase().includes(q)),
-        )
-      : [];
+  useEffect(() => {
+    if (q.length <= 1) {
+      setCatalogResults([]);
+      setSearching(false);
+      return;
+    }
+
+    let cancelled = false;
+    setSearching(true);
+
+    const timer = setTimeout(() => {
+      searchBooks(query.trim())
+        .then((results) => {
+          if (cancelled) return;
+          const inLibrary = new Set(books.map((b) => b.id));
+          setCatalogResults(
+            results.map(toCatalogBook).filter((b) => !inLibrary.has(b.id)),
+          );
+        })
+        .catch((err) => {
+          console.error(err);
+          if (!cancelled) setCatalogResults([]);
+        })
+        .finally(() => {
+          if (!cancelled) setSearching(false);
+        });
+    }, 300);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [q, query, books]);
 
   const hasResults = libraryResults.length > 0 || catalogResults.length > 0;
+
+  const handleAdd = async (catalogBook: CatalogBook) => {
+    setAddingId(catalogBook.id);
+    await onAddBook(catalogBook);
+    setAddingId(null);
+  };
 
   return (
     <div
@@ -68,7 +102,6 @@ export default function SearchModal({
           boxShadow: "var(--shadow-modal)",
         }}
       >
-        {/* Search input */}
         <div className="flex items-center gap-3 px-5 py-4 border-b border-border">
           <svg
             className="w-4 h-4 flex-shrink-0"
@@ -113,7 +146,6 @@ export default function SearchModal({
           )}
         </div>
 
-        {/* Results */}
         <div className="overflow-y-auto flex-1">
           {!q && (
             <div className="flex flex-col items-center justify-center py-14 px-6 text-center">
@@ -144,7 +176,11 @@ export default function SearchModal({
             </div>
           )}
 
-          {q && !hasResults && (
+          {q && searching && !hasResults && (
+            <p className="text-muted text-sm text-center py-10">Searching…</p>
+          )}
+
+          {q && !searching && !hasResults && (
             <div className="flex flex-col items-center justify-center py-14 px-6 text-center">
               <p className="font-serif text-bark text-lg font-semibold">
                 No results
@@ -202,11 +238,9 @@ export default function SearchModal({
               {catalogResults.map((book) => (
                 <button
                   key={book.id}
-                  onClick={() => {
-                    onAddBook(book);
-                    onClose();
-                  }}
-                  className="w-full flex items-center gap-4 px-5 py-3 hover:bg-surface transition-colors text-left"
+                  disabled={addingId === book.id}
+                  onClick={() => handleAdd(book)}
+                  className="w-full flex items-center gap-4 px-5 py-3 hover:bg-surface transition-colors text-left disabled:opacity-60"
                 >
                   <BookCover book={book} size="xs" />
                   <div className="flex-1 min-w-0">
@@ -222,20 +256,26 @@ export default function SearchModal({
                       color: "var(--status-reading)",
                     }}
                   >
-                    <svg
-                      className="w-2.5 h-2.5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2.5}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 4.5v15m7.5-7.5h-15"
-                      />
-                    </svg>
-                    Add
+                    {addingId === book.id ? (
+                      "Adding…"
+                    ) : (
+                      <>
+                        <svg
+                          className="w-2.5 h-2.5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2.5}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M12 4.5v15m7.5-7.5h-15"
+                          />
+                        </svg>
+                        Add
+                      </>
+                    )}
                   </span>
                 </button>
               ))}
@@ -245,7 +285,6 @@ export default function SearchModal({
           <div className="h-2" />
         </div>
 
-        {/* Cancel */}
         <div className="px-5 py-3 border-t border-border">
           <button
             onClick={onClose}
