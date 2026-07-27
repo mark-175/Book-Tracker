@@ -35,7 +35,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.Name = "access_token";
         options.Cookie.HttpOnly = true;
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Cookie.SameSite = SameSiteMode.None;
         options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
         options.SlidingExpiration = false;
         options.Events.OnRedirectToLogin = context =>
@@ -74,6 +74,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("frontend");
 
 app.UseAuthentication();
 

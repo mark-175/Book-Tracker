@@ -8,15 +8,17 @@ export function useAuth() {
   const [status, setStatus] = useState<AuthStatus>("loading");
   const [user, setUser] = useState<UserDTO | null>(null);
 
-  const checkSession = useCallback(async () => {
+  const checkSession = useCallback(async (): Promise<boolean> => {
     try {
       const me = await authApi.getMe();
       setUser(me);
       setStatus(me ? "authenticated" : "unauthenticated");
+      return me !== null;
     } catch (err) {
       console.error(err);
       setUser(null);
       setStatus("unauthenticated");
+      return false;
     }
   }, []);
 
@@ -37,7 +39,12 @@ export function useAuth() {
   const login = useCallback(
     async (username: string, password: string) => {
       await authApi.login(username, password);
-      await checkSession();
+      const authenticated = await checkSession();
+      if (!authenticated) {
+        throw new Error(
+          "Signed in, but couldn't establish a session. Please try again.",
+        );
+      }
     },
     [checkSession],
   );

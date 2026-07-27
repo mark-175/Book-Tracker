@@ -23,7 +23,10 @@ export default function ReadingProgressPage({
   const saveAndBack = () => {
     onUpdateBook(book.id, {
       pagesRead: localPages,
-      status: localPages >= book.pageCount ? "read" : "reading",
+      status:
+        book.pageCount > 0 && localPages >= book.pageCount
+          ? "read"
+          : "reading",
     });
     onBack();
   };

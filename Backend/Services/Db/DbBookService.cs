@@ -110,8 +110,11 @@ public class DbBookService : IDbBookService
         {
             userBook.Status = dto.Status.Value;
 
-            if (dto.Status == BookStatus.Reading && userBook.StartedAt is null)
-                userBook.StartedAt = DateTime.UtcNow;
+            if (dto.Status == BookStatus.Reading)
+            {
+                if (userBook.StartedAt is null) userBook.StartedAt = DateTime.UtcNow;
+                userBook.FinishedAt = null;
+            }
             else if (dto.Status == BookStatus.Read && userBook.FinishedAt is null)
                 userBook.FinishedAt = DateTime.UtcNow;
             else if (dto.Status == BookStatus.ToRead)
