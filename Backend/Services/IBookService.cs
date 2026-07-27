@@ -8,4 +8,5 @@ public interface IBookService
     public Task<AddBookToUserResult> AddBookToUser(int bookId, Guid userId);
     public Task<List<UserBookDTO>> GetUserBooks(Guid userId);
     public Task<UserBookDTO?> GetUserBook(Guid userId, int bookId);
+    public Task<UserBookDTO?> UpdateUserBook(Guid userId, int bookId, UpdateUserBookDTO dto);
 }

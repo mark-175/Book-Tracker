@@ -1,6 +1,7 @@
 using BookTracker.Api.Data;
 using BookTracker.Api.DTOs;
 using BookTracker.Api.Entities;
+using BookTracker.Api.Enums;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Sqlite.Diagnostics.Internal;
@@ -95,5 +96,39 @@ public class DbBookService : IDbBookService
             .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BookId == bookId);
 
         return userBook is null ? null : BookMapper.ToUserBookDTO(userBook);
+    }
+
+    public async Task<UserBookDTO?> UpdateUserBook(Guid userId, int bookId, UpdateUserBookDTO dto)
+    {
+        var userBook = await _dbContext.UserBooks
+            .Include(ub => ub.Book)
+            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BookId == bookId);
+
+        if (userBook is null) return null;
+
+        if (dto.Status is not null && dto.Status != userBook.Status)
+        {
+            userBook.Status = dto.Status.Value;
+
+            if (dto.Status == BookStatus.Reading && userBook.StartedAt is null)
+                userBook.StartedAt = DateTime.UtcNow;
+            else if (dto.Status == BookStatus.Read && userBook.FinishedAt is null)
+                userBook.FinishedAt = DateTime.UtcNow;
+            else if (dto.Status == BookStatus.ToRead)
+            {
+                userBook.StartedAt = null;
+                userBook.FinishedAt = null;
+            }
+        }
+
+        if (dto.Rating is not null) userBook.Rating = dto.Rating.Value;
+        if (dto.PagesRead is not null) userBook.PagesRead = dto.PagesRead.Value;
+        if (dto.Notes is not null) userBook.Notes = dto.Notes;
+
+        userBook.UpdatedAt = DateTime.UtcNow;
+
+        await _dbContext.SaveChangesAsync();
+
+        return BookMapper.ToUserBookDTO(userBook);
     }
 }

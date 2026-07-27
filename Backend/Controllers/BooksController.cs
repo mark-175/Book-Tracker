@@ -40,6 +40,17 @@ public class BooksController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPatch("{id:int}")]
+    public async Task<IActionResult> UpdateBook(int id, [FromBody] UpdateUserBookDTO dto)
+    {
+        var userId = User.GetUserId();
+        var result = await _bookService.UpdateUserBook(userId, id, dto);
+
+        if (result is null) return NotFound();
+
+        return Ok(result);
+    }
+
     [HttpGet("search")]
     public async Task<IActionResult> FindBook([FromQuery] string query)
     {

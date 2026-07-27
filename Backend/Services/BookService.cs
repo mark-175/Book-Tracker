@@ -53,4 +53,9 @@ public class BookService : IBookService
     {
         return await _dbBookService.GetUserBook(userId, bookId);
     }
+
+    public async Task<UserBookDTO?> UpdateUserBook(Guid userId, int bookId, UpdateUserBookDTO dto)
+    {
+        return await _dbBookService.UpdateUserBook(userId, bookId, dto);
+    }
 }
