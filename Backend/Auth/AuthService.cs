@@ -16,11 +16,13 @@ public partial class AuthService : IAuthService
     private readonly AppDbContext _db;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly PasswordHasher<User> _hasher = new();
+    private readonly ILogger<AuthService> _logger;
 
-    public AuthService(AppDbContext db, IHttpContextAccessor httpContextAccessor)
+    public AuthService(AppDbContext db, IHttpContextAccessor httpContextAccessor, ILogger<AuthService> logger)
     {
         _db = db;
         _httpContextAccessor = httpContextAccessor;
+        _logger = logger;
     }
 
     public async Task<AuthResult> RegisterAsync(string username, string password)
@@ -48,11 +50,17 @@ At least on special character [!@#$%^&]");
     {
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == username);
         if (user is null)
+        {
+            _logger.LogWarning("Login attempt for nonexistent username {Username}", username);
             return AuthResult.Fail("Invalid credentials.");
+        }
 
         var verifyResult = _hasher.VerifyHashedPassword(user, user.PasswordHash, password);
         if (verifyResult == PasswordVerificationResult.Failed)
+        {
+            _logger.LogWarning("Failed login attempt for user {UserId}", user.Id);
             return AuthResult.Fail("Invalid credentials.");
+        }
 
         var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, user.Id.ToString()) };
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

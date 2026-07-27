@@ -1,6 +1,7 @@
 using BookTracker.Api.Auth;
 using BookTracker.Api.Config;
 using BookTracker.Api.Data;
+using BookTracker.Api.ExceptionHandling;
 
 using BookTracker.Api.Services;
 using BookTracker.Api.Services.Db;
@@ -13,6 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 // Injected services
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -59,6 +63,8 @@ builder.Configuration.GetSection("GoogleBooksApi"));
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {

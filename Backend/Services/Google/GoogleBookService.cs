@@ -9,13 +9,16 @@ public class GoogleBookService : IGoogleBookService
 {
     private readonly GoogleBooksApiOptions _options;
     private readonly HttpClient _httpClient;
+    private readonly ILogger<GoogleBookService> _logger;
 
     public GoogleBookService(
            IOptions<GoogleBooksApiOptions> options,
-           HttpClient httpClient)
+           HttpClient httpClient,
+           ILogger<GoogleBookService> logger)
     {
         _options = options.Value;
         _httpClient = httpClient;
+        _logger = logger;
     }
 
     public async Task<GoogleBooksSearchResponse?> FindBookInGoogle(string query, List<string> preferredLanguages)
@@ -28,8 +31,8 @@ public class GoogleBookService : IGoogleBookService
         }
         catch (HttpRequestException e)
         {
-            Console.WriteLine($"Error occured while sneding request to endpoint {e.TargetSite}: {e.Message}");
-            Console.WriteLine($"Status Code: {e.StatusCode} {e.HttpRequestError}");
+            _logger.LogWarning(e, "Google Books API request failed for query {Query} (status {StatusCode})",
+                query, e.StatusCode);
             return null;
         }
     }
