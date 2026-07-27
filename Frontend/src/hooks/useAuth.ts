@@ -9,9 +9,15 @@ export function useAuth() {
   const [user, setUser] = useState<UserDTO | null>(null);
 
   const checkSession = useCallback(async () => {
-    const me = await authApi.getMe();
-    setUser(me);
-    setStatus(me ? "authenticated" : "unauthenticated");
+    try {
+      const me = await authApi.getMe();
+      setUser(me);
+      setStatus(me ? "authenticated" : "unauthenticated");
+    } catch (err) {
+      console.error(err);
+      setUser(null);
+      setStatus("unauthenticated");
+    }
   }, []);
 
   useEffect(() => {
