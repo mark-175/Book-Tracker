@@ -17,6 +17,8 @@ public class UserBookDTO
 
     public BookStatus Status { get; set; }
     public double Rating { get; set; }
+    public int PagesRead { get; set; }
+    public string Notes { get; set; } = string.Empty;
     public DateTime? StartedAt { get; set; }
     public DateTime? FinishedAt { get; set; }
     public DateTime AddedAt { get; set; }

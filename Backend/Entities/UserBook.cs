@@ -7,6 +7,8 @@ public class UserBook
     public int Id { get; set; }
     public BookStatus Status { get; set; } = BookStatus.ToRead;
     public double Rating { get; set; }
+    public int PagesRead { get; set; }
+    public string Notes { get; set; } = string.Empty;
 
     public Guid UserId { get; set; }
     public User User { get; set; } = null!;

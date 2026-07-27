@@ -74,6 +74,8 @@ public static class BookMapper
             PageCount = userBook.Book.PageCount,
             Status = userBook.Status,
             Rating = userBook.Rating,
+            PagesRead = userBook.PagesRead,
+            Notes = userBook.Notes,
             StartedAt = userBook.StartedAt,
             FinishedAt = userBook.FinishedAt,
             AddedAt = userBook.AddedAt,
