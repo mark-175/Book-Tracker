@@ -70,4 +70,23 @@ public class DbBookService : IDbBookService
             return AddBookToUserResult.UnexpectedError(bookId);
         }
     }
+
+    public async Task<List<UserBookDTO>> GetUserBooks(Guid userId)
+    {
+        var userBooks = await _dbContext.UserBooks
+            .Include(ub => ub.Book)
+            .Where(ub => ub.UserId == userId)
+            .ToListAsync();
+
+        return userBooks.Select(BookMapper.ToUserBookDTO).ToList();
+    }
+
+    public async Task<UserBookDTO?> GetUserBook(Guid userId, int bookId)
+    {
+        var userBook = await _dbContext.UserBooks
+            .Include(ub => ub.Book)
+            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BookId == bookId);
+
+        return userBook is null ? null : BookMapper.ToUserBookDTO(userBook);
+    }
 }

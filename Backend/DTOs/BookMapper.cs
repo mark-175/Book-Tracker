@@ -57,4 +57,27 @@ public static class BookMapper
             PageCount = book.PageCount,
         };
     }
+
+    public static UserBookDTO ToUserBookDTO(UserBook userBook)
+    {
+        return new UserBookDTO
+        {
+            BookId = userBook.Book.Id,
+            Title = userBook.Book.Title,
+            Subtitle = userBook.Book.Subtitle,
+            Authors = userBook.Book.Authors,
+            Language = userBook.Book.Language,
+            Description = userBook.Book.Description,
+            CoverUrl = userBook.Book.CoverUrl,
+            Isbn10 = userBook.Book.Isbn10,
+            Isbn13 = userBook.Book.Isbn13,
+            PageCount = userBook.Book.PageCount,
+            Status = userBook.Status,
+            Rating = userBook.Rating,
+            StartedAt = userBook.StartedAt,
+            FinishedAt = userBook.FinishedAt,
+            AddedAt = userBook.AddedAt,
+            UpdatedAt = userBook.UpdatedAt,
+        };
+    }
 }

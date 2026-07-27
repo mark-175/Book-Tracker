@@ -20,6 +20,26 @@ public class BooksController : ControllerBase
         _bookService = bookService;
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetBooks()
+    {
+        var userId = User.GetUserId();
+        var result = await _bookService.GetUserBooks(userId);
+
+        return Ok(result);
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetBook(int id)
+    {
+        var userId = User.GetUserId();
+        var result = await _bookService.GetUserBook(userId, id);
+
+        if (result is null) return NotFound();
+
+        return Ok(result);
+    }
+
     [HttpGet("search")]
     public async Task<IActionResult> FindBook([FromQuery] string query)
     {

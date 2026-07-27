@@ -43,4 +43,14 @@ public class BookService : IBookService
 
         return googleResult;
     }
+
+    public async Task<List<UserBookDTO>> GetUserBooks(Guid userId)
+    {
+        return await _dbBookService.GetUserBooks(userId);
+    }
+
+    public async Task<UserBookDTO?> GetUserBook(Guid userId, int bookId)
+    {
+        return await _dbBookService.GetUserBook(userId, bookId);
+    }
 }
