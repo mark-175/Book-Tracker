@@ -1,5 +1,7 @@
 using BookTracker.Api.Auth;
 using BookTracker.Api.DTOs;
+using BookTracker.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookTracker.Api.Controllers;
@@ -9,10 +11,12 @@ namespace BookTracker.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly IUserService _userService;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, IUserService userService)
     {
         _authService = authService;
+        _userService = userService;
     }
 
     [HttpPost("register")]
@@ -34,5 +38,17 @@ public class AuthController : ControllerBase
     {
         await _authService.LogoutAsync();
         return Ok();
+    }
+
+    [HttpGet("me")]
+    [Authorize]
+    public async Task<IActionResult> Me()
+    {
+        var userId = User.GetUserId();
+        var user = await _userService.GetUser(userId);
+
+        if (user is null) return NotFound();
+
+        return Ok(new UserDTO { Id = user.Id, Username = user.Username });
     }
 }

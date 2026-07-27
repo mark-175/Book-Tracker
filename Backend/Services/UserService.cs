@@ -1,4 +1,5 @@
 using BookTracker.Api.Data;
+using BookTracker.Api.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookTracker.Api.Services;
@@ -21,5 +22,10 @@ public class UserService : IUserService
         if (preferredLanguages is null || preferredLanguages == "") return ["en"];
 
         return [.. preferredLanguages.Split(",")];
+    }
+
+    public async Task<User?> GetUser(Guid userId)
+    {
+        return await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
     }
 }
