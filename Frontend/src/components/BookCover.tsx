@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface CoverProps {
   title: string;
@@ -24,6 +24,10 @@ const SIZES = {
 export default function BookCover({ book, size = "md" }: Props) {
   const s = SIZES[size];
   const [imageFailed, setImageFailed] = useState(false);
+
+  useEffect(() => {
+    setImageFailed(false);
+  }, [book.coverUrl]);
 
   if (book.coverUrl && !imageFailed) {
     return (
