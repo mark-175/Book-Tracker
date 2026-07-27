@@ -7,6 +7,7 @@ interface Props {
   onNavigateToBook: (bookId: string) => void;
   onNavigateToList: (status: ReadingStatus) => void;
   onOpenSearch: () => void;
+  onLogout: () => Promise<void>;
 }
 
 const STATUS_CONFIG = [
@@ -85,6 +86,7 @@ export default function HomePage({
   onNavigateToBook,
   onNavigateToList,
   onOpenSearch,
+  onLogout,
 }: Props) {
   const currentBook = books.find((b) => b.status === "reading") ?? null;
   const toRead = books.filter((b) => b.status === "to-read");
@@ -114,12 +116,36 @@ export default function HomePage({
 
   return (
     <div className="min-h-screen bg-cream pb-28">
-      {/* Header */}
-      <div className="px-5 pt-14 pb-5">
-        <p className="text-muted text-xs tracking-wide">{today}</p>
-        <h1 className="font-serif text-[32px] font-semibold text-bark mt-1 leading-tight">
-          My Library
-        </h1>
+      <div className="px-5 pt-14 pb-5 flex items-start justify-between gap-3">
+        <div>
+          <p className="text-muted text-xs tracking-wide">{today}</p>
+          <h1 className="font-serif text-[32px] font-semibold text-bark mt-1 leading-tight">
+            My Library
+          </h1>
+        </div>
+        <button
+          onClick={onLogout}
+          aria-label="Log out"
+          className="w-9 h-9 rounded-full flex items-center justify-center transition-colors flex-shrink-0 mt-1"
+          style={{
+            background: "var(--bg-card)",
+            border: "1px solid var(--border-card)",
+          }}
+        >
+          <svg
+            className="w-4 h-4 text-bark"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3-3l3 3m0 0l-3 3m3-3H9"
+            />
+          </svg>
+        </button>
       </div>
 
       {/* Reading Stats */}

@@ -1,15 +1,13 @@
 import { useState } from "react";
-import {
-  INITIAL_BOOKS,
-  type Book,
-  type ReadingStatus,
-  type CatalogBook,
-} from "./types/data";
+import type { ReadingStatus } from "./types/data";
 import HomePage from "./pages/HomePage";
 import BookDetailsPage from "./pages/BookDetailsPage";
 import ReadingProgressPage from "./pages/ReadingProgressPage";
 import ReadingStatusListPage from "./pages/ReadingStatusListPage";
+import LoginPage from "./pages/LoginPage";
 import SearchModal from "./components/SearchModal";
+import { useAuth } from "./hooks/useAuth";
+import { useBooks } from "./hooks/useBooks";
 
 type Route =
   | { name: "home" }
@@ -18,7 +16,25 @@ type Route =
   | { name: "reading-status-list"; status: ReadingStatus };
 
 export default function App() {
-  const [books, setBooks] = useState<Book[]>(INITIAL_BOOKS);
+  const { status, login, register, logout } = useAuth();
+
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen bg-cream flex items-center justify-center">
+        <p className="text-muted text-sm">Loading…</p>
+      </div>
+    );
+  }
+
+  if (status === "unauthenticated") {
+    return <LoginPage onLogin={login} onRegister={register} />;
+  }
+
+  return <Library onLogout={logout} />;
+}
+
+function Library({ onLogout }: { onLogout: () => Promise<void> }) {
+  const { books, error, loading, addBook, updateBook } = useBooks();
   const [route, setRoute] = useState<Route>({ name: "home" });
   const [history, setHistory] = useState<Route[]>([]);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -41,22 +57,6 @@ export default function App() {
     }
   };
 
-  const updateBook = (id: string, updates: Partial<Book>) => {
-    setBooks((bs) => bs.map((b) => (b.id === id ? { ...b, ...updates } : b)));
-  };
-
-  const addBook = (catalogBook: CatalogBook) => {
-    const newBook: Book = {
-      ...catalogBook,
-      status: "to-read",
-      pagesRead: 0,
-      rating: null,
-      notes: "",
-    };
-    setBooks((bs) => [...bs, newBook]);
-    navigate({ name: "book-details", bookId: newBook.id });
-  };
-
   const renderPage = () => {
     switch (route.name) {
       case "home":
@@ -70,6 +70,7 @@ export default function App() {
               navigate({ name: "reading-status-list", status })
             }
             onOpenSearch={() => setSearchOpen(true)}
+            onLogout={onLogout}
           />
         );
       case "book-details": {
@@ -124,6 +125,19 @@ export default function App() {
           boxShadow: "0 0 40px rgba(44,26,14,0.15)",
         }}
       >
+        {loading && books.length === 0 && (
+          <p className="text-muted text-sm text-center pt-14">
+            Loading your library…
+          </p>
+        )}
+        {error && (
+          <p
+            className="text-xs text-center pt-4"
+            style={{ color: "#A85830" }}
+          >
+            {error}
+          </p>
+        )}
         {renderPage()}
       </div>
 
@@ -135,9 +149,10 @@ export default function App() {
             setSearchOpen(false);
             navigate({ name: "book-details", bookId: id });
           }}
-          onAddBook={(catalogBook) => {
+          onAddBook={async (catalogBook) => {
+            const newBookId = await addBook(catalogBook.id);
             setSearchOpen(false);
-            addBook(catalogBook);
+            if (newBookId) navigate({ name: "book-details", bookId: newBookId });
           }}
         />
       )}
