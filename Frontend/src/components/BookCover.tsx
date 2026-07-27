@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 interface CoverProps {
   title: string;
   author: string;
@@ -21,8 +23,9 @@ const SIZES = {
 
 export default function BookCover({ book, size = "md" }: Props) {
   const s = SIZES[size];
+  const [imageFailed, setImageFailed] = useState(false);
 
-  if (book.coverUrl) {
+  if (book.coverUrl && !imageFailed) {
     return (
       <div
         className={`${s.outer} rounded flex-shrink-0 relative overflow-hidden`}
@@ -33,6 +36,7 @@ export default function BookCover({ book, size = "md" }: Props) {
           alt={book.title}
           loading="lazy"
           className="w-full h-full object-cover"
+          onError={() => setImageFailed(true)}
         />
       </div>
     );
