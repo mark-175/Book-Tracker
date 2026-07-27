@@ -15,6 +15,7 @@ export interface Book {
   notes: string
   coverHue: number
   coverSat: number
+  coverUrl?: string
 }
 
 export interface CatalogBook {
@@ -28,6 +29,7 @@ export interface CatalogBook {
   isbn13: string
   coverHue: number
   coverSat: number
+  coverUrl?: string
 }
 
 export const INITIAL_BOOKS: Book[] = [
