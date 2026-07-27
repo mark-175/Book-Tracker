@@ -25,8 +25,24 @@ public class GoogleBookService : IGoogleBookService
     {
         try
         {
-            var url = $"{_options.BaseUrl}?q={Uri.EscapeDataString(query)}&langRestrict={string.Join("&", preferredLanguages)}&key={_options.ApiKey}";
+            var url = $"{_options.BaseUrl}?q={Uri.EscapeDataString(query)}&printType=books&key={_options.ApiKey}";
             var response = await _httpClient.GetFromJsonAsync<GoogleBooksSearchResponse>(url);
+
+            if (response is null) return null;
+
+            var activeLanguages = preferredLanguages
+                .Where(l => !string.IsNullOrWhiteSpace(l))
+                .ToList();
+
+            if (activeLanguages.Count > 0)
+            {
+                response.Items = response.Items
+                    .Where(v => MatchesPreferredLanguage(v, activeLanguages))
+                    .ToList();
+            }
+
+            response.TotalItems = response.Items.Count;
+
             return response;
         }
         catch (HttpRequestException e)
@@ -35,5 +51,12 @@ public class GoogleBookService : IGoogleBookService
                 query, e.StatusCode);
             return null;
         }
+    }
+
+    private static bool MatchesPreferredLanguage(GoogleVolume volume, List<string> activeLanguages)
+    {
+        var language = volume.VolumeInfo.Language;
+        return language is not null &&
+            activeLanguages.Contains(language, StringComparer.OrdinalIgnoreCase);
     }
 }
