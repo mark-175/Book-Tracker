@@ -1,2 +1,6 @@
-Backend/obj/Debug/net10.0/BookTracker.Api.AssemblyInfo.cs
-Backend/obj/Debug/net10.0/BookTracker.Api.AssemblyInfoInputs.cache
+Frontend/.env
+
+# Claude Code
+CLAUDE.md
+CLAUDE.local.md
+.claude/
