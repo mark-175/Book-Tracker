@@ -3,6 +3,7 @@ interface CoverProps {
   author: string;
   coverHue: number;
   coverSat: number;
+  coverUrl?: string;
 }
 
 interface Props {
@@ -20,11 +21,26 @@ const SIZES = {
 
 export default function BookCover({ book, size = "md" }: Props) {
   const s = SIZES[size];
+
+  if (book.coverUrl) {
+    return (
+      <div
+        className={`${s.outer} rounded flex-shrink-0 relative overflow-hidden`}
+        style={{ boxShadow: "var(--shadow-cover)" }}
+      >
+        <img
+          src={book.coverUrl}
+          alt={book.title}
+          loading="lazy"
+          className="w-full h-full object-cover"
+        />
+      </div>
+    );
+  }
+
   const h = book.coverHue;
   const sat = book.coverSat;
 
-  // Cover colours are dynamically computed per-book from hue/saturation,
-  // so they stay in JS. Only static decoration values use CSS tokens.
   return (
     <div
       className={`${s.outer} rounded flex-shrink-0 relative overflow-hidden`}
