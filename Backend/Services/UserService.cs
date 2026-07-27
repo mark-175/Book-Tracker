@@ -19,7 +19,7 @@ public class UserService : IUserService
         .Select(u => u.PreferredLanguages)
         .FirstOrDefaultAsync();
 
-        if (preferredLanguages is null || preferredLanguages == "") return ["en"];
+        if (preferredLanguages is null || preferredLanguages == "") return [""];
 
         return [.. preferredLanguages.Split(",")];
     }
