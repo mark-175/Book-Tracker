@@ -6,6 +6,7 @@ public interface IBookService
 {
     public Task<List<BookSearchResult>> FindBook(string query, Guid userId);
     public Task<AddBookToUserResult> AddBookToUser(int bookId, Guid userId);
+    public Task<BookSearchResult> AddManualBook(AddManualBookDTO dto);
     public Task<List<UserBookDTO>> GetUserBooks(Guid userId);
     public Task<UserBookDTO?> GetUserBook(Guid userId, int bookId);
     public Task<UserBookDTO?> UpdateUserBook(Guid userId, int bookId, UpdateUserBookDTO dto);

@@ -65,6 +65,13 @@ public class BooksController : ControllerBase
         return NotFound("Couldn't find book.");
     }
 
+    [HttpPost("manual")]
+    public async Task<IActionResult> AddManualBook([FromBody] AddManualBookDTO dto)
+    {
+        var result = await _bookService.AddManualBook(dto);
+        return Created("api/books/manual", result);
+    }
+
     [HttpPost("add")]
     public async Task<IActionResult> AddBookToUser([FromQuery] int bookId)
     {

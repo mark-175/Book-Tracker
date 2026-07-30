@@ -22,6 +22,12 @@ public class BookService : IBookService
         return await _dbBookService.AddBookToUser(bookId, userId);
     }
 
+    public async Task<BookSearchResult> AddManualBook(AddManualBookDTO dto)
+    {
+        var book = await _dbBookService.FindOrCreateManualBook(dto);
+        return BookMapper.ToSearchResult(book);
+    }
+
     public async Task<List<BookSearchResult>> FindBook(string query, Guid userId)
     {
         var preferredLanguages = await _userService.GetPreferredLanguages(userId);
