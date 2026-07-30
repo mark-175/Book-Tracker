@@ -81,6 +81,14 @@ public class DbBookService : IDbBookService
             return AddBookToUserResult.BookNotFoundResult(userId, bookId);
         }
 
+        var alreadyInLibrary = await _dbContext.UserBooks
+            .AnyAsync(ub => ub.UserId == userId && ub.BookId == bookId);
+        if (alreadyInLibrary)
+        {
+            _logger.LogWarning("AddBookToUser called for book {BookId} already in user {UserId}'s library", bookId, userId);
+            return AddBookToUserResult.AlreadyInLibraryResult(userId, bookId);
+        }
+
         var userBook = new UserBook
         {
             UserId = userId,

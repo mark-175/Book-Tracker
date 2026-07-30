@@ -38,6 +38,15 @@ public class AddBookToUserResult
         Message = "Book Not found"
     };
 
+    public static AddBookToUserResult AlreadyInLibraryResult(Guid userId, int bookId) => new()
+    {
+        AddBookStatus = AddBookStatus.AlreadyInLibrary,
+        BookId = bookId,
+        Book = null,
+        UserId = userId,
+        Message = "Book is already in your library"
+    };
+
     public static AddBookToUserResult Success(Guid userId, int bookId, BookDTO book) => new()
     {
         AddBookStatus = AddBookStatus.Success,

@@ -77,4 +77,93 @@ public class DbBookServiceTests
         Assert.Equal("9780441013593", book.Isbn13);
         Assert.Single(dbContext.Books);
     }
+
+    [Fact]
+    public async Task AddBookToUser_UnknownUser_ReturnsUserNotFound()
+    {
+        await using var dbContext = InMemoryDbContextFactory.Create();
+        var book = new Book { Title = "Dune", Authors = "Frank Herbert" };
+        dbContext.Books.Add(book);
+        await dbContext.SaveChangesAsync();
+        var service = CreateService(dbContext);
+
+        var result = await service.AddBookToUser(book.Id, Guid.NewGuid());
+
+        Assert.Equal(AddBookStatus.UserNotFound, result.AddBookStatus);
+    }
+
+    [Fact]
+    public async Task AddBookToUser_UnknownBook_ReturnsBookNotFound()
+    {
+        await using var dbContext = InMemoryDbContextFactory.Create();
+        var user = new User { Id = Guid.NewGuid(), Username = "reader", PasswordHash = "hash" };
+        dbContext.Users.Add(user);
+        await dbContext.SaveChangesAsync();
+        var service = CreateService(dbContext);
+
+        var result = await service.AddBookToUser(999, user.Id);
+
+        Assert.Equal(AddBookStatus.BookNotFound, result.AddBookStatus);
+    }
+
+    [Fact]
+    public async Task AddBookToUser_NewBookForUser_ReturnsSuccessAndCreatesUserBook()
+    {
+        await using var dbContext = InMemoryDbContextFactory.Create();
+        var user = new User { Id = Guid.NewGuid(), Username = "reader", PasswordHash = "hash" };
+        var book = new Book { Title = "Dune", Authors = "Frank Herbert" };
+        dbContext.Users.Add(user);
+        dbContext.Books.Add(book);
+        await dbContext.SaveChangesAsync();
+        var service = CreateService(dbContext);
+
+        var result = await service.AddBookToUser(book.Id, user.Id);
+
+        Assert.Equal(AddBookStatus.Success, result.AddBookStatus);
+        Assert.NotNull(result.Book);
+        Assert.Single(dbContext.UserBooks);
+    }
+
+    [Fact]
+    public async Task AddBookToUser_AlreadyInActiveLibrary_ReturnsAlreadyInLibrary()
+    {
+        await using var dbContext = InMemoryDbContextFactory.Create();
+        var user = new User { Id = Guid.NewGuid(), Username = "reader", PasswordHash = "hash" };
+        var book = new Book { Title = "Dune", Authors = "Frank Herbert" };
+        dbContext.Users.Add(user);
+        dbContext.Books.Add(book);
+        await dbContext.SaveChangesAsync();
+        dbContext.UserBooks.Add(new UserBook { UserId = user.Id, BookId = book.Id });
+        await dbContext.SaveChangesAsync();
+        var service = CreateService(dbContext);
+
+        var result = await service.AddBookToUser(book.Id, user.Id);
+
+        Assert.Equal(AddBookStatus.AlreadyInLibrary, result.AddBookStatus);
+        Assert.Single(dbContext.UserBooks);
+    }
+
+    [Fact]
+    public async Task AddBookToUser_PreviouslySoftDeleted_AllowsReAdding()
+    {
+        await using var dbContext = InMemoryDbContextFactory.Create();
+        var user = new User { Id = Guid.NewGuid(), Username = "reader", PasswordHash = "hash" };
+        var book = new Book { Title = "Dune", Authors = "Frank Herbert" };
+        dbContext.Users.Add(user);
+        dbContext.Books.Add(book);
+        await dbContext.SaveChangesAsync();
+        dbContext.UserBooks.Add(new UserBook
+        {
+            UserId = user.Id,
+            BookId = book.Id,
+            IsDeleted = true,
+            DeletedAt = DateTime.UtcNow
+        });
+        await dbContext.SaveChangesAsync();
+        var service = CreateService(dbContext);
+
+        var result = await service.AddBookToUser(book.Id, user.Id);
+
+        Assert.Equal(AddBookStatus.Success, result.AddBookStatus);
+    }
 }

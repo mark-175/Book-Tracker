@@ -5,5 +5,6 @@ public enum AddBookStatus
     Success,
     BookNotFound,
     UserNotFound,
-    UnexpectedError
+    UnexpectedError,
+    AlreadyInLibrary
 }
