@@ -4,6 +4,7 @@ import type {
   UserBookDTO,
   BookSearchResultDTO,
   AddBookToUserResultDTO,
+  AddManualBookRequest,
   UpdateUserBookRequest,
 } from "@/types/api";
 
@@ -30,6 +31,16 @@ export async function searchBooks(
     if (isAxiosError(err) && err.response?.status === 404) return [];
     throw err;
   }
+}
+
+export async function addManualBook(
+  request: AddManualBookRequest,
+): Promise<BookSearchResultDTO> {
+  const response = await apiClient.post<BookSearchResultDTO>(
+    "/books/manual",
+    request,
+  );
+  return response.data;
 }
 
 export async function addBookToLibrary(

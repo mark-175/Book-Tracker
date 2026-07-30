@@ -11,6 +11,7 @@ export const ADD_BOOK_STATUS = {
   BookNotFound: 1,
   UserNotFound: 2,
   UnexpectedError: 3,
+  AlreadyInLibrary: 4,
 } as const;
 
 export type AddBookStatusValue =
@@ -68,6 +69,16 @@ export interface AddBookToUserResultDTO {
   book: BookDTO | null;
   userId: string;
   message: string;
+}
+
+export interface AddManualBookRequest {
+  title: string;
+  authors: string;
+  subtitle?: string;
+  isbn10?: string;
+  isbn13?: string;
+  pageCount?: number;
+  description?: string;
 }
 
 export interface UpdateUserBookRequest {
