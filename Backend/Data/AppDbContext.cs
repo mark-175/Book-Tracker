@@ -24,7 +24,9 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Book>(entity =>
         {
-            entity.HasIndex(b => b.GoogleBooksId).IsUnique();
+            entity.HasIndex(b => b.GoogleBooksId)
+                  .IsUnique()
+                  .HasFilter("\"GoogleBooksId\" IS NOT NULL");
         });
         modelBuilder.Entity<UserBook>(entity =>
         {
