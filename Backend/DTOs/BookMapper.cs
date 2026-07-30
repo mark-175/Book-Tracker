@@ -1,5 +1,6 @@
 using BookTracker.Api.DTOs.Google;
 using BookTracker.Api.Entities;
+using BookTracker.Api.Enums;
 
 namespace BookTracker.Api.DTOs;
 
@@ -10,6 +11,7 @@ public static class BookMapper
         return new Book
         {
             GoogleBooksId = volume.Id,
+            Source = BookSource.Google,
             Title = volume.VolumeInfo.Title,
             Subtitle = volume.VolumeInfo.Subtitle ?? string.Empty,
             Authors = string.Join(", ", volume.VolumeInfo.Authors ?? []),
@@ -21,6 +23,24 @@ public static class BookMapper
             Isbn13 = volume.VolumeInfo.IndustryIdentifiers?
                 .FirstOrDefault(i => i.Type == "ISBN_13")?.Identifier,
             PageCount = volume.VolumeInfo.PageCount,
+            CachedAt = DateTime.UtcNow
+        };
+    }
+
+    public static Book ToBook(AddManualBookDTO dto)
+    {
+        return new Book
+        {
+            GoogleBooksId = null,
+            Source = BookSource.Manual,
+            Title = dto.Title,
+            Subtitle = dto.Subtitle ?? string.Empty,
+            Authors = dto.Authors,
+            Language = string.Empty,
+            Description = dto.Description,
+            Isbn10 = dto.Isbn10,
+            Isbn13 = dto.Isbn13,
+            PageCount = dto.PageCount,
             CachedAt = DateTime.UtcNow
         };
     }
