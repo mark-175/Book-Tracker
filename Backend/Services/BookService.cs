@@ -32,7 +32,7 @@ public class BookService : IBookService
     {
         var preferredLanguages = await _userService.GetPreferredLanguages(userId);
 
-        var dbResult = await _dbBookService.FindBookInDb(query, userId, preferredLanguages);
+        var dbResult = await _dbBookService.FindBookInDb(query, preferredLanguages);
         if (dbResult.Count > 0) return dbResult;
 
         var googleResponse = await _googleBookService.FindBookInGoogle(query, preferredLanguages);

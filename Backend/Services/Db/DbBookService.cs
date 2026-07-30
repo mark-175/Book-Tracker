@@ -19,7 +19,7 @@ public class DbBookService : IDbBookService
         _logger = logger;
     }
 
-    public async Task<List<BookSearchResult>> FindBookInDb(string query, Guid userId, List<string> preferredLanguages)
+    public async Task<List<BookSearchResult>> FindBookInDb(string query, List<string> preferredLanguages)
     {
         var books = await _dbContext.Books
             .Where(b => b.Title.ToUpper().Contains(query.ToUpper()) &&

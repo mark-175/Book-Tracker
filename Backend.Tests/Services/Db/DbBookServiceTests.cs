@@ -176,7 +176,7 @@ public class DbBookServiceTests
         await dbContext.SaveChangesAsync();
         var service = CreateService(dbContext);
 
-        var results = await service.FindBookInDb("great", Guid.NewGuid(), new List<string> { "en" });
+        var results = await service.FindBookInDb("great", new List<string> { "en" });
 
         Assert.Single(results);
         Assert.Equal(book.Id, results[0].Id);
@@ -191,7 +191,7 @@ public class DbBookServiceTests
         await dbContext.SaveChangesAsync();
         var service = CreateService(dbContext);
 
-        var results = await service.FindBookInDb("GREAT", Guid.NewGuid(), new List<string> { "en" });
+        var results = await service.FindBookInDb("GREAT", new List<string> { "en" });
 
         Assert.Single(results);
         Assert.Equal(book.Id, results[0].Id);
@@ -206,7 +206,7 @@ public class DbBookServiceTests
         await dbContext.SaveChangesAsync();
         var service = CreateService(dbContext);
 
-        var results = await service.FindBookInDb("great", Guid.NewGuid(), new List<string> { "en" });
+        var results = await service.FindBookInDb("great", new List<string> { "en" });
 
         Assert.Empty(results);
     }
@@ -220,7 +220,7 @@ public class DbBookServiceTests
         await dbContext.SaveChangesAsync();
         var service = CreateService(dbContext);
 
-        var results = await service.FindBookInDb("nonexistent", Guid.NewGuid(), new List<string> { "en" });
+        var results = await service.FindBookInDb("nonexistent", new List<string> { "en" });
 
         Assert.Empty(results);
     }

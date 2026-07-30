@@ -45,7 +45,7 @@ public class BookServiceTests
 
         var dbBookServiceMock = new Mock<IDbBookService>();
         dbBookServiceMock
-            .Setup(s => s.FindBookInDb("dune", userId, preferredLanguages))
+            .Setup(s => s.FindBookInDb("dune", preferredLanguages))
             .ReturnsAsync(dbResult);
 
         var googleBookServiceMock = new Mock<IGoogleBookService>();
@@ -70,7 +70,7 @@ public class BookServiceTests
 
         var dbBookServiceMock = new Mock<IDbBookService>();
         dbBookServiceMock
-            .Setup(s => s.FindBookInDb("dune", userId, preferredLanguages))
+            .Setup(s => s.FindBookInDb("dune", preferredLanguages))
             .ReturnsAsync([]);
 
         var volume = new GoogleVolume
@@ -115,7 +115,7 @@ public class BookServiceTests
 
         var dbBookServiceMock = new Mock<IDbBookService>();
         dbBookServiceMock
-            .Setup(s => s.FindBookInDb("dune", userId, preferredLanguages))
+            .Setup(s => s.FindBookInDb("dune", preferredLanguages))
             .ReturnsAsync([]);
 
         var googleBookServiceMock = new Mock<IGoogleBookService>();
