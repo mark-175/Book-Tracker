@@ -43,6 +43,28 @@ public class DbBookService : IDbBookService
         return book;
     }
 
+    public async Task<Book> FindOrCreateManualBook(AddManualBookDTO dto)
+    {
+        if (!string.IsNullOrWhiteSpace(dto.Isbn13))
+        {
+            var existingByIsbn13 = await _dbContext.Books
+                .FirstOrDefaultAsync(b => b.Isbn13 == dto.Isbn13);
+            if (existingByIsbn13 is not null) return existingByIsbn13;
+        }
+
+        if (!string.IsNullOrWhiteSpace(dto.Isbn10))
+        {
+            var existingByIsbn10 = await _dbContext.Books
+                .FirstOrDefaultAsync(b => b.Isbn10 == dto.Isbn10);
+            if (existingByIsbn10 is not null) return existingByIsbn10;
+        }
+
+        var book = BookMapper.ToBook(dto);
+        _dbContext.Books.Add(book);
+        await _dbContext.SaveChangesAsync();
+        return book;
+    }
+
     public async Task<AddBookToUserResult> AddBookToUser(int bookId, Guid userId)
     {
         var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
