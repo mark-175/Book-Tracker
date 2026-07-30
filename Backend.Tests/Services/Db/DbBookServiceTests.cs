@@ -166,4 +166,91 @@ public class DbBookServiceTests
 
         Assert.Equal(AddBookStatus.Success, result.AddBookStatus);
     }
+
+    [Fact]
+    public async Task FindBookInDb_TitleContainsQueryCaseInsensitive_ReturnsMatchingBook()
+    {
+        await using var dbContext = InMemoryDbContextFactory.Create();
+        var book = new Book { Title = "The Great Gatsby", Authors = "F. Scott Fitzgerald", Language = "en" };
+        dbContext.Books.Add(book);
+        await dbContext.SaveChangesAsync();
+        var service = CreateService(dbContext);
+
+        var results = await service.FindBookInDb("great", Guid.NewGuid(), new List<string> { "en" });
+
+        Assert.Single(results);
+        Assert.Equal(book.Id, results[0].Id);
+    }
+
+    [Fact]
+    public async Task FindBookInDb_QueryInDifferentCase_StillMatches()
+    {
+        await using var dbContext = InMemoryDbContextFactory.Create();
+        var book = new Book { Title = "The Great Gatsby", Authors = "F. Scott Fitzgerald", Language = "en" };
+        dbContext.Books.Add(book);
+        await dbContext.SaveChangesAsync();
+        var service = CreateService(dbContext);
+
+        var results = await service.FindBookInDb("GREAT", Guid.NewGuid(), new List<string> { "en" });
+
+        Assert.Single(results);
+        Assert.Equal(book.Id, results[0].Id);
+    }
+
+    [Fact]
+    public async Task FindBookInDb_TitleMatchesButLanguageNotPreferred_ExcludesBook()
+    {
+        await using var dbContext = InMemoryDbContextFactory.Create();
+        var book = new Book { Title = "The Great Gatsby", Authors = "F. Scott Fitzgerald", Language = "fr" };
+        dbContext.Books.Add(book);
+        await dbContext.SaveChangesAsync();
+        var service = CreateService(dbContext);
+
+        var results = await service.FindBookInDb("great", Guid.NewGuid(), new List<string> { "en" });
+
+        Assert.Empty(results);
+    }
+
+    [Fact]
+    public async Task FindBookInDb_NoTitleMatchesQuery_ReturnsEmptyList()
+    {
+        await using var dbContext = InMemoryDbContextFactory.Create();
+        var book = new Book { Title = "The Great Gatsby", Authors = "F. Scott Fitzgerald", Language = "en" };
+        dbContext.Books.Add(book);
+        await dbContext.SaveChangesAsync();
+        var service = CreateService(dbContext);
+
+        var results = await service.FindBookInDb("nonexistent", Guid.NewGuid(), new List<string> { "en" });
+
+        Assert.Empty(results);
+    }
+
+    [Fact]
+    public async Task AddBookToDb_MatchingGoogleBooksId_ReturnsExistingBookWithoutCreatingDuplicate()
+    {
+        await using var dbContext = InMemoryDbContextFactory.Create();
+        var existing = new Book { GoogleBooksId = "abc123", Title = "Dune", Authors = "Frank Herbert" };
+        dbContext.Books.Add(existing);
+        await dbContext.SaveChangesAsync();
+        var service = CreateService(dbContext);
+        var incoming = new Book { GoogleBooksId = "abc123", Title = "Dune (incoming)", Authors = "Frank Herbert" };
+
+        var result = await service.AddBookToDb(incoming);
+
+        Assert.Equal(existing.Id, result.Id);
+        Assert.Single(dbContext.Books);
+    }
+
+    [Fact]
+    public async Task AddBookToDb_NoMatchingGoogleBooksId_PersistsNewBook()
+    {
+        await using var dbContext = InMemoryDbContextFactory.Create();
+        var service = CreateService(dbContext);
+        var incoming = new Book { GoogleBooksId = "new-id-456", Title = "Dune", Authors = "Frank Herbert" };
+
+        var result = await service.AddBookToDb(incoming);
+
+        Assert.NotEqual(0, result.Id);
+        Assert.Single(dbContext.Books);
+    }
 }
