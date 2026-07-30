@@ -7,6 +7,7 @@ using BookTracker.Api.Services;
 using BookTracker.Api.Services.Db;
 using BookTracker.Api.Services.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -63,6 +64,11 @@ builder.Configuration.GetSection("GoogleBooksApi"));
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.UseExceptionHandler();
 
