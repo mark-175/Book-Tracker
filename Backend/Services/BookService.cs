@@ -37,8 +37,8 @@ public class BookService : IBookService
         foreach (var volume in googleResponse.Items)
         {
             var book = BookMapper.ToBook(volume);
-            await _dbBookService.AddBookToDb(book);
-            googleResult.Add(BookMapper.ToSearchResult(book));
+            var savedBook = await _dbBookService.AddBookToDb(book);
+            googleResult.Add(BookMapper.ToSearchResult(savedBook));
         }
 
         return googleResult;
