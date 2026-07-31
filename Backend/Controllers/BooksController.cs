@@ -72,6 +72,15 @@ public class BooksController : ControllerBase
         return Created("api/books/manual", result);
     }
 
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleteBook(int id)
+    {
+        var userId = User.GetUserId();
+        var result = await _bookService.RemoveBookFromUser(userId, id);
+
+        return result.Success ? Ok(result) : NotFound(result);
+    }
+
     [HttpPost("add")]
     public async Task<IActionResult> AddBookToUser([FromQuery] int bookId)
     {

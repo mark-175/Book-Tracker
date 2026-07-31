@@ -231,4 +231,34 @@ public class BooksControllerTests
         var notFound = Assert.IsType<NotFoundObjectResult>(response);
         Assert.Equal("Couldn't find book.", notFound.Value);
     }
+
+    [Fact]
+    public async Task DeleteBook_Success_ReturnsOkWithResult()
+    {
+        var userId = Guid.NewGuid();
+        var expected = RemoveBookFromUserResult.Ok();
+        var bookServiceMock = new Mock<IBookService>();
+        bookServiceMock.Setup(s => s.RemoveBookFromUser(userId, 1)).ReturnsAsync(expected);
+        var controller = CreateController(bookServiceMock.Object, userId);
+
+        var response = await controller.DeleteBook(1);
+
+        var ok = Assert.IsType<OkObjectResult>(response);
+        Assert.Same(expected, ok.Value);
+    }
+
+    [Fact]
+    public async Task DeleteBook_NotFound_ReturnsNotFoundWithResult()
+    {
+        var userId = Guid.NewGuid();
+        var expected = RemoveBookFromUserResult.NotFoundResult();
+        var bookServiceMock = new Mock<IBookService>();
+        bookServiceMock.Setup(s => s.RemoveBookFromUser(userId, 1)).ReturnsAsync(expected);
+        var controller = CreateController(bookServiceMock.Object, userId);
+
+        var response = await controller.DeleteBook(1);
+
+        var notFound = Assert.IsType<NotFoundObjectResult>(response);
+        Assert.Same(expected, notFound.Value);
+    }
 }
