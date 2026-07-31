@@ -64,4 +64,9 @@ public class BookService : IBookService
     {
         return await _dbBookService.UpdateUserBook(userId, bookId, dto);
     }
+
+    public async Task<RemoveBookFromUserResult> RemoveBookFromUser(Guid userId, int bookId)
+    {
+        return await _dbBookService.RemoveBookFromUser(userId, bookId);
+    }
 }

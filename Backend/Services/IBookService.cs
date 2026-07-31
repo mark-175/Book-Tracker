@@ -10,4 +10,5 @@ public interface IBookService
     public Task<List<UserBookDTO>> GetUserBooks(Guid userId);
     public Task<UserBookDTO?> GetUserBook(Guid userId, int bookId);
     public Task<UserBookDTO?> UpdateUserBook(Guid userId, int bookId, UpdateUserBookDTO dto);
+    public Task<RemoveBookFromUserResult> RemoveBookFromUser(Guid userId, int bookId);
 }

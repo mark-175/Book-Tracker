@@ -212,4 +212,20 @@ public class BookServiceTests
 
         Assert.Null(result);
     }
+
+    [Fact]
+    public async Task RemoveBookFromUser_ReturnsDbBookServiceResult()
+    {
+        var userId = Guid.NewGuid();
+        var expected = RemoveBookFromUserResult.Ok();
+
+        var dbBookServiceMock = new Mock<IDbBookService>();
+        dbBookServiceMock.Setup(s => s.RemoveBookFromUser(userId, 1)).ReturnsAsync(expected);
+
+        var service = new BookService(dbBookServiceMock.Object, Mock.Of<IGoogleBookService>(), Mock.Of<IUserService>());
+
+        var result = await service.RemoveBookFromUser(userId, 1);
+
+        Assert.Same(expected, result);
+    }
 }
