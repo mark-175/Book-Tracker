@@ -109,14 +109,28 @@ export default function BookDetailsPage({
                 {book.author}
               </p>
             </div>
-            {book.status === "read" && book.rating !== null && (
-              <div className="mt-3">
-                <StarRating rating={book.rating} readonly size="sm" />
-              </div>
-            )}
           </div>
         </div>
       </div>
+
+      {/* Star rating (only for finished books) */}
+      {book.status === "read" && (
+        <div className="px-5 mb-4">
+          <div
+            className="rounded-2xl p-5"
+            style={{ background: "#FDFBF6", border: "1px solid #DDD4BF" }}
+          >
+            <p className="text-[10px] font-semibold text-muted-light uppercase tracking-widest mb-5 text-center">
+              Your Rating
+            </p>
+            <StarRating
+              rating={book.rating}
+              onChange={(rating) => onUpdateBook(book.id, { rating })}
+              size="lg"
+            />
+          </div>
+        </div>
+      )}
 
       {/* Reading progress (only if currently reading) */}
       {book.status === "reading" && (
