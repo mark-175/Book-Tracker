@@ -13,6 +13,7 @@ export interface Book {
   pagesRead: number
   rating: number | null
   notes: string
+  startedAt: string | null
   coverHue: number
   coverSat: number
   coverUrl?: string

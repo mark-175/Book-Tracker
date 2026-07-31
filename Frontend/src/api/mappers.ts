@@ -45,6 +45,7 @@ export function toBook(dto: UserBookDTO): Book {
     pagesRead: dto.pagesRead,
     rating: dto.rating === 0 ? null : dto.rating,
     notes: dto.notes,
+    startedAt: dto.startedAt,
     coverUrl: dto.coverUrl ?? undefined,
     ...hashCover(dto.title + dto.isbn13),
   };

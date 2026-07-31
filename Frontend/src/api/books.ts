@@ -6,6 +6,7 @@ import type {
   AddBookToUserResultDTO,
   AddManualBookRequest,
   UpdateUserBookRequest,
+  RemoveBookFromUserResultDTO,
 } from "@/types/api";
 
 export async function getUserBooks(): Promise<UserBookDTO[]> {
@@ -61,6 +62,15 @@ export async function updateUserBook(
   const response = await apiClient.patch<UserBookDTO>(
     `/books/${bookId}`,
     updates,
+  );
+  return response.data;
+}
+
+export async function deleteBook(
+  bookId: number,
+): Promise<RemoveBookFromUserResultDTO> {
+  const response = await apiClient.delete<RemoveBookFromUserResultDTO>(
+    `/books/${bookId}`,
   );
   return response.data;
 }

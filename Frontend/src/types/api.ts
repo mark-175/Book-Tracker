@@ -81,6 +81,11 @@ export interface AddManualBookRequest {
   description?: string;
 }
 
+export interface RemoveBookFromUserResultDTO {
+  success: boolean;
+  message: string;
+}
+
 export interface UpdateUserBookRequest {
   status?: BookStatusValue;
   rating?: number;

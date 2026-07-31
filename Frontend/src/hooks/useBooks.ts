@@ -61,6 +61,22 @@ export function useBooks() {
     [],
   );
 
+  const deleteBook = useCallback(async (id: string): Promise<boolean> => {
+    try {
+      setError(null);
+      const result = await booksApi.deleteBook(Number(id));
+      if (!result.success) {
+        throw new Error(result.message);
+      }
+      setBooks((bs) => bs.filter((b) => b.id !== id));
+      return true;
+    } catch (err) {
+      setError("Couldn't remove that book.");
+      console.error(err);
+      return false;
+    }
+  }, []);
+
   return {
     books,
     loading,
@@ -68,5 +84,6 @@ export function useBooks() {
     reload: loadBooks,
     addBook,
     updateBook,
+    deleteBook,
   };
 }
