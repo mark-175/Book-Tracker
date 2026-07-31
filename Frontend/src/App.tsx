@@ -34,7 +34,7 @@ export default function App() {
 }
 
 function Library({ onLogout }: { onLogout: () => Promise<void> }) {
-  const { books, error, loading, addBook, updateBook } = useBooks();
+  const { books, error, loading, addBook, updateBook, deleteBook } = useBooks();
   const [route, setRoute] = useState<Route>({ name: "home" });
   const [history, setHistory] = useState<Route[]>([]);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -107,6 +107,7 @@ function Library({ onLogout }: { onLogout: () => Promise<void> }) {
             onNavigateToBook={(id) =>
               navigate({ name: "book-details", bookId: id })
             }
+            onDeleteBook={deleteBook}
           />
         );
     }

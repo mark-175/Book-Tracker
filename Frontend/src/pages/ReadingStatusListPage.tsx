@@ -1,12 +1,19 @@
+import { useEffect, useState } from "react";
 import type { Book, ReadingStatus } from "../types/data";
 import BookCover from "../components/BookCover";
 import StarRating from "../components/StarRating";
+import ConfirmDialog from "../components/ConfirmDialog";
 
 interface Props {
   status: ReadingStatus;
   books: Book[];
   onBack: () => void;
   onNavigateToBook: (bookId: string) => void;
+  onDeleteBook: (bookId: string) => Promise<boolean>;
+}
+
+function hasReadingProgress(book: Book): boolean {
+  return book.pagesRead > 0 || book.startedAt !== null;
 }
 
 const STATUS_COLORS: Record<ReadingStatus, string> = {
@@ -81,10 +88,28 @@ export default function ReadingStatusListPage({
   books,
   onBack,
   onNavigateToBook,
+  onDeleteBook,
 }: Props) {
   const filtered = books.filter((b) => b.status === status);
   const color = STATUS_COLORS[status];
   const label = STATUS_LABELS[status];
+
+  const [deleteTarget, setDeleteTarget] = useState<Book | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(null), 2500);
+    return () => clearTimeout(timer);
+  }, [toast]);
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    const id = deleteTarget.id;
+    setDeleteTarget(null);
+    const success = await onDeleteBook(id);
+    setToast(success ? "Book removed" : "Couldn't remove that book.");
+  };
 
   return (
     <div className="min-h-screen bg-cream pb-8">
@@ -152,10 +177,18 @@ export default function ReadingStatusListPage({
         )}
 
         {filtered.map((book) => (
-          <button
+          <div
             key={book.id}
+            role="button"
+            tabIndex={0}
             onClick={() => onNavigateToBook(book.id)}
-            className="w-full rounded-2xl p-4 flex gap-4 items-start text-left transition-all active:scale-[0.99]"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onNavigateToBook(book.id);
+              }
+            }}
+            className="w-full rounded-2xl p-4 flex gap-4 items-start text-left transition-all active:scale-[0.99] cursor-pointer"
             style={{
               background: "#FDFBF6",
               border: "1px solid #DDD4BF",
@@ -218,22 +251,75 @@ export default function ReadingStatusListPage({
               )}
             </div>
 
-            <svg
-              className="w-4 h-4 text-muted-light flex-shrink-0 mt-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8.25 4.5l7.5 7.5-7.5 7.5"
-              />
-            </svg>
-          </button>
+            <div className="flex flex-col items-center gap-2 flex-shrink-0 mt-1">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDeleteTarget(book);
+                }}
+                aria-label="Delete book"
+                title="Delete book"
+                className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:bg-black/5"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="var(--color-rust)"
+                  strokeWidth={1.75}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.166L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.166m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                  />
+                </svg>
+              </button>
+              <svg
+                className="w-4 h-4 text-muted-light flex-shrink-0"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            </div>
+          </div>
         ))}
       </div>
+
+      {deleteTarget && (
+        <ConfirmDialog
+          title="Remove book from list?"
+          message={
+            hasReadingProgress(deleteTarget)
+              ? "This book will be removed from your list, but you can restore it later since you have reading progress saved."
+              : "This book will be permanently removed from your library."
+          }
+          confirmLabel="Delete"
+          cancelLabel="Cancel"
+          danger
+          onCancel={() => setDeleteTarget(null)}
+          onConfirm={handleConfirmDelete}
+        />
+      )}
+
+      {toast && (
+        <div
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-full text-sm font-medium text-white"
+          style={{
+            background: "var(--color-bark-700)",
+            boxShadow: "var(--shadow-modal)",
+          }}
+        >
+          {toast}
+        </div>
+      )}
     </div>
   );
 }
