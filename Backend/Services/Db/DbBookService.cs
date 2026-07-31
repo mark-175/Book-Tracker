@@ -165,4 +165,23 @@ public class DbBookService : IDbBookService
 
         return BookMapper.ToUserBookDTO(userBook);
     }
+
+    public async Task<RemoveBookFromUserResult> RemoveBookFromUser(Guid userId, int bookId)
+    {
+        var userBook = await _dbContext.UserBooks
+            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BookId == bookId);
+
+        if (userBook is null)
+        {
+            _logger.LogWarning("RemoveBookFromUser called for book {BookId} not in user {UserId}'s active library", bookId, userId);
+            return RemoveBookFromUserResult.NotFoundResult();
+        }
+
+        userBook.IsDeleted = true;
+        userBook.DeletedAt = DateTime.UtcNow;
+
+        await _dbContext.SaveChangesAsync();
+
+        return RemoveBookFromUserResult.Ok();
+    }
 }

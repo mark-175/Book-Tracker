@@ -4,6 +4,7 @@ using BookTracker.Api.Entities;
 using BookTracker.Api.Enums;
 using BookTracker.Api.Services.Db;
 using BookTracker.Api.Tests.TestHelpers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -252,5 +253,88 @@ public class DbBookServiceTests
 
         Assert.NotEqual(0, result.Id);
         Assert.Single(dbContext.Books);
+    }
+
+    [Fact]
+    public async Task RemoveBookFromUser_ExistingActiveEntry_SoftDeletesAndReturnsSuccess()
+    {
+        await using var dbContext = InMemoryDbContextFactory.Create();
+        var user = new User { Id = Guid.NewGuid(), Username = "reader", PasswordHash = "hash" };
+        var book = new Book { Title = "Dune", Authors = "Frank Herbert" };
+        dbContext.Users.Add(user);
+        dbContext.Books.Add(book);
+        await dbContext.SaveChangesAsync();
+        dbContext.UserBooks.Add(new UserBook { UserId = user.Id, BookId = book.Id });
+        await dbContext.SaveChangesAsync();
+        var service = CreateService(dbContext);
+
+        var result = await service.RemoveBookFromUser(user.Id, book.Id);
+
+        Assert.True(result.Success);
+        var remaining = await dbContext.UserBooks.ToListAsync();
+        Assert.Empty(remaining);
+        var deleted = await dbContext.UserBooks.IgnoreQueryFilters()
+            .FirstAsync(ub => ub.UserId == user.Id && ub.BookId == book.Id);
+        Assert.True(deleted.IsDeleted);
+        Assert.NotNull(deleted.DeletedAt);
+    }
+
+    [Fact]
+    public async Task RemoveBookFromUser_NoEntryForBook_ReturnsNotFound()
+    {
+        await using var dbContext = InMemoryDbContextFactory.Create();
+        var user = new User { Id = Guid.NewGuid(), Username = "reader", PasswordHash = "hash" };
+        dbContext.Users.Add(user);
+        await dbContext.SaveChangesAsync();
+        var service = CreateService(dbContext);
+
+        var result = await service.RemoveBookFromUser(user.Id, 999);
+
+        Assert.False(result.Success);
+    }
+
+    [Fact]
+    public async Task RemoveBookFromUser_AlreadyDeletedEntry_ReturnsNotFound()
+    {
+        await using var dbContext = InMemoryDbContextFactory.Create();
+        var user = new User { Id = Guid.NewGuid(), Username = "reader", PasswordHash = "hash" };
+        var book = new Book { Title = "Dune", Authors = "Frank Herbert" };
+        dbContext.Users.Add(user);
+        dbContext.Books.Add(book);
+        await dbContext.SaveChangesAsync();
+        dbContext.UserBooks.Add(new UserBook
+        {
+            UserId = user.Id,
+            BookId = book.Id,
+            IsDeleted = true,
+            DeletedAt = DateTime.UtcNow
+        });
+        await dbContext.SaveChangesAsync();
+        var service = CreateService(dbContext);
+
+        var result = await service.RemoveBookFromUser(user.Id, book.Id);
+
+        Assert.False(result.Success);
+    }
+
+    [Fact]
+    public async Task RemoveBookFromUser_EntryBelongsToDifferentUser_ReturnsNotFound()
+    {
+        await using var dbContext = InMemoryDbContextFactory.Create();
+        var owner = new User { Id = Guid.NewGuid(), Username = "owner", PasswordHash = "hash" };
+        var otherUser = new User { Id = Guid.NewGuid(), Username = "intruder", PasswordHash = "hash" };
+        var book = new Book { Title = "Dune", Authors = "Frank Herbert" };
+        dbContext.Users.AddRange(owner, otherUser);
+        dbContext.Books.Add(book);
+        await dbContext.SaveChangesAsync();
+        dbContext.UserBooks.Add(new UserBook { UserId = owner.Id, BookId = book.Id });
+        await dbContext.SaveChangesAsync();
+        var service = CreateService(dbContext);
+
+        var result = await service.RemoveBookFromUser(otherUser.Id, book.Id);
+
+        Assert.False(result.Success);
+        var untouched = await dbContext.UserBooks.FirstAsync(ub => ub.UserId == owner.Id && ub.BookId == book.Id);
+        Assert.False(untouched.IsDeleted);
     }
 }
